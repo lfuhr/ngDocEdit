@@ -7,7 +7,7 @@
    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-   <div ng-app="helloWorldModule">
+   <div ng-app="app">
       <div ng-controller="HelloWorldController">
 
 
@@ -35,7 +35,7 @@
 
          <div>{{rules.length}}</div>
          <button ng-click="add()"> Add one</button>
-         <a ng-href="{{ download }}" download="rules.txt">download</a>
+         <a ng-href="{{ download() }}" download="rules.js">download</a>
          <pre>{{rules | json}}</pre>
 
 
