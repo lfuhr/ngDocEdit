@@ -1,1 +1,65 @@
-input{border: none;}
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 145%;
+    word-spacing: 2px;
+    margin: auto;
+    max-width: 1200px;
+    padding: 2%;
+}
+input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+    background-color: inherit;
+}
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+th {
+    width: 7em;
+    text-align: left;
+    background-color: whitesmoke;
+}
+th, td {
+    border: 1px solid grey;
+    padding: .1em;
+    padding: .2em .5em .2em;
+}
+h1, h2, h3, header {
+	margin: 1.5em 0 .7em;
+	letter-spacing: -1px;
+    word-spacing: normal;
+    font-weight: 500
+}
+header {font-size: 3em; line-height: normal}
+b, strong, th {
+    font-weight: 500;
+}
+*:invalid, .ng-invalid { background-color: #f2c3c3; }
+.hljs {background-color: transparent;}
+
+/* Heading Numbering
+/*============================================================================*/
+body { counter-reset: h1counter; }
+h1{ counter-reset: h2counter; }
+h1:before {
+    content: counter(h1counter) "\0000a0\0000a0";
+    counter-increment: h1counter;
+}
+h2:before {
+    content: counter(h1counter) "." counter(h2counter) "\0000a0\0000a0";
+    counter-increment: h2counter;
+    counter-reset: h3counter;
+}
+h3:before {
+    content: counter(h1counter) "." counter(h2counter) "." counter(h3counter)
+        "\0000a0\0000a0";
+    counter-increment: h3counter;
+}
+/*============================================================================*/
