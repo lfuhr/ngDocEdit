@@ -3,7 +3,7 @@
 <head>
 	<title>Enterprise Architect UML Model Validation</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/xcode.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
 	<script src="validationRules.js"></script>
 	<script src="templateEngine.js"></script>
@@ -19,6 +19,10 @@
 	<p>This document is only for INTERNAL use.</p>
 	<div ng-app="app">
 		<div ng-controller="controller">
+            
+            <!--a ng-repeat="headline in headlines" ng-click="scrollTo(headline)">{{headline.label}}</a>
+            <div table-of-contents ng-model="app">{{html}} </div-->
+            
 			<h1>Usage</h1>
 			<p>A rule is defined in a javascript object. The script then collects all rules and evaluates them in one single iteration over the EA-Model. Configuration is only showed when there is one.</p>
 			<p></p>
@@ -61,16 +65,16 @@
 					</tr>
 					<tr>
 						<th>Sourcecode</th>
-						<td><pre><code class="javascript">{{ rule | obj2src }}</code></pre></td>
+						<td><pre><code ng-bind-html="rule | obj2src | highlight | unsafe"></code></pre></td>
 					</tr>
 				</table>
 
 			</div> <!-- rule in rules -->
 			<button ng-click="rules.push({})"> Add one</button>
 			<h1>Whole Sourcecode</h1>
-
-			Can be <!--a ng-href="{{ dljson(rules) }}" download="rules.js">downloaded</a-->
-			<pre><code class="javascript">{{rules | arr2src}}</code></pre>
+            
+			<!--Can be <a ng-href="{{ dljson()  }}" download="rules.js">downloaded</a>   NOT in IE -->
+			<pre><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></code></pre>
 
 		</div>
 	</div>
