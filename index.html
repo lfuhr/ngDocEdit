@@ -10,73 +10,81 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
-	<header>Enterprise Architect UML Model Validation</header>
-	<dl>
-		<dt>Author:</dt> <dd>Ludwig Fuhr</dd>
-		<dt>Version:</dt> <dd>0.1</dd>
-	</dl>
-	<p>This document is only for INTERNAL use.</p>
-	<div ng-app="app">
-		<div ng-controller="controller">
-            
-            <!--a ng-repeat="headline in headlines" ng-click="scrollTo(headline)">{{headline.label}}</a>
-            <div table-of-contents ng-model="app">{{html}} </div-->
-            
-			<h1>Usage</h1>
-			<p>A rule is defined in a javascript object. The script then collects all rules and evaluates them in one single iteration over the EA-Model. Configuration is only showed when there is one.</p>
-			<p></p>
-            
-            <h1>How to build Rules</h1>
-            <p>Rules can be added using the button in this Document. The implementation can only be done in a external code editor. Enterprise Architect is recommended, because of autocompletion capabilities on its API.</p>
-            <h2>Implicit properties</h2>
-            <p>Every Rule has an implicated <em>findings</em> array that can be used. If the result function is not implemented, the predefined one assumes no findings for success.</p>
+<body ng-app="app" ng-controller="controller">
 
-			<h1>List of Rules</h1>
-			<p>Here you can add and remove rules. Empty but required fields are highlighted.</p>
-			<div data-ng-repeat="rule in rules">
 
-                <button  style="float: right;" ng-click="removeRule($index)">Remove</button>
-				<h2>{{rule.description}}</h2>
-				<table>
-					<tr>
-						<th>Description</th>
-						<td><input type="text" required="required" ng-model="rule.description"/></td>
-					</tr>
-					<tr>
-						<th>Rule ID</th>
-						<td><input type="text" required="required" ng-model="rule.ID"/></td>
-					</tr>
-					<tr ng-if="rule.config">
-						<th>Configuration</th>
-						<td><input type="text" codestring ng-model="rule.config"/></td>
-					</tr>
-					<tr ng-if="rule.requiredBy">
-						<th>Required By</th>
-						<td><input type="text" codestring ng-model="rule.requiredBy"/></td>
-					</tr>
-					<tr ng-if="rule | requirements">
-						<th>Requires</th>
-						<td>{{ rule | requirements }}</td>
-					</tr>
-					<tr>
-						<th>Evaluated on</th>
-						<td>{{ rule | evalsOn }}</td>
-					</tr>
-					<tr>
-						<th>Sourcecode</th>
-						<td><pre><code ng-bind-html="rule | obj2src | highlight | unsafe"></code></pre></td>
-					</tr>
-				</table>
+    
+	<coverpage>
+		<header>Enterprise Architect UML Model Validation</header>
+        <div id="toc">
+            <h2>Contents</h2>
+            <ul>
+            <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
+                {{headline.label}} </li>
+            </ul>
+        </div>
+		<dl>
+			<dt>Author:</dt> <dd>Ludwig Fuhr</dd>
+			<dt>Version:</dt> <dd>0.1</dd>
+		</dl>
+		<p>This document is only for INTERNAL use.</p>
+	</coverpage>
+    
+    <div class="toc-supervised" ng-model="html">
 
-			</div> <!-- rule in rules -->
-			<button ng-click="rules.push({})"> Add one</button>
-			<h1>Whole Sourcecode</h1>
-            
-			<!--Can be <a ng-href="{{ dljson()  }}" download="rules.js">downloaded</a>   NOT in IE -->
-			<pre><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></code></pre>
+        <h1>Usage</h1>
+        <p>A rule is defined in a javascript object. The script then collects all rules and evaluates them in one single iteration over the EA-Model. Configuration is only showed when there is one.</p>
+        <p></p>
 
-		</div>
-	</div>
+        <h1>How to build Rules</h1>
+        <p>Rules can be added using the button in this Document. The implementation can only be done in a external code editor. Enterprise Architect is recommended, because of autocompletion capabilities on its API.</p>
+        <h2>Implicit properties</h2>
+        <p>Every Rule has an implicated <em>findings</em> array that can be used. If the result function is not implemented, the predefined one assumes no findings for success.</p>
+
+        <h1>List of Rules</h1>
+        <p>Here you can add and remove rules. Empty but required fields are highlighted.</p>
+        <div data-ng-repeat="rule in rules">
+
+            <button  style="float: right;" ng-click="removeRule($index)">Remove</button>
+            <h2>{{rule.description}}</h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <td><input type="text" required="required" ng-model="rule.description"/></td>
+                </tr>
+                <tr>
+                    <th>Rule ID</th>
+                    <td><input type="text" required="required" ng-model="rule.ID"/></td>
+                </tr>
+                <tr ng-if="rule.config">
+                    <th>Configuration</th>
+                    <td><input type="text" codestring ng-model="rule.config"/></td>
+                </tr>
+                <tr ng-if="rule.requiredBy">
+                    <th>Required By</th>
+                    <td><input type="text" codestring ng-model="rule.requiredBy"/></td>
+                </tr>
+                <tr ng-if="rule | requirements">
+                    <th>Requires</th>
+                    <td>{{ rule | requirements }}</td>
+                </tr>
+                <tr>
+                    <th>Evaluated on</th>
+                    <td>{{ rule | evalsOn }}</td>
+                </tr>
+                <tr>
+                    <th>Sourcecode</th>
+                    <td><pre><code ng-bind-html="rule | obj2src | highlight | unsafe"></code></pre></td>
+                </tr>
+            </table>
+
+        </div> <!-- rule in rules -->
+        <button ng-click="rules.push({})"> Add one</button>
+        <h1>Whole Sourcecode</h1>
+
+        <!--Can be <a ng-href="{{ dljson()  }}" download="rules.js">downloaded</a>   NOT in IE -->
+        <pre><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></pre>
+
+    </div>
 </body>
 </html>

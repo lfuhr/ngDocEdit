@@ -28,50 +28,51 @@ function arr2src(arr) {
 /* Angular Template Engine
 /*============================================================================*/
 // Define model
-var app = angular.module("app", []);
+var app = angular.module("app", [])
 
 // Allow download from blob
-app.config(['$compileProvider', function ($compileProvider) {
+.config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
-}]);
+}])
 
 
 // Output Filters
-app.filter('string', function () {
+.filter('string', function () {
     return function(input) { return input.toString(); };
-});
-app.filter('obj2src', function () { return obj2src; });
-app.filter('arr2src', function () { return arr2src; });
-app.filter('evalsOn', function() {
+})
+.filter('obj2src', function () { return obj2src; })
+.filter('arr2src', function () { return arr2src; })
+.filter('evalsOn', function() {
     var evalfunctions = ["diagram","element","package","structured"];
     return function(input){
         return Object.keys(input).filter(function(property){
             return evalfunctions.indexOf(property) > -1
         }).join(', ')
     };
-});
-app.filter('requirements', function () { return function(rule, rules) {
+})
+.filter('requirements', function () { return function(rule, rules) {
     return (validationRules.filter(function(otherRule){
         return otherRule.requiredBy && otherRule.requiredBy.indexOf(rule.ID) > -1
     }).map(function(r){return r.ID})).join(', ');
-}; });
-app.filter('highlight', function($sce) {
+}; })
+.filter('highlight', function($sce) {
   return function(input, lang) {return hljs.highlight('javascript', input).value; }
-}).filter('unsafe', function($sce) { return $sce.trustAsHtml; })
+})
+.filter('unsafe', function($sce) { return $sce.trustAsHtml; })
 
 
 // 2-Way code-string conversion
-app.directive('codestring', function() { return {
+.directive('codestring', function() { return {
         restrict: 'A', require: 'ngModel',
         link: function(scope, element, attr, ngModel) {
             ngModel.$parsers.push( JSON.parse );
             ngModel.$formatters.push( JSON.stringify);
 //            ngModel.$parsers.push(function () {
 //                ngModel.$setValidity('codestring', false); });
-} }; });
-app.directive('tableOfContents', function(){
+} }; })
+.directive('tocSupervised', function(){
     return {
-        restrict:'A',
+        restrict:'C',
         require:'?ngModel',
         link : function(scope, elm, attrs,ngModel) {
             function updateHeadlines() {
@@ -101,7 +102,7 @@ app.directive('tableOfContents', function(){
 
 
 // Provides variables to the code
-app.controller("controller", function ($scope, $window, $filter) {
+.controller("controller", function ($scope, $window, $filter) {
 
     $scope.rules = validationRules; // load data
 
