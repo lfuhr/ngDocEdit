@@ -124,8 +124,8 @@ validationRules = [
     var actualVersion = Repository.GetTechnologyVersion("Mega")
     return {
       success: (this.config.requiredVersion == actualVersion),
-      messages: ["Version: " + actualVersion + (this.config.requiredVersion == actualVersion ?
-        "" : " (" + this.config.requiredVersion + " required)")]
+      messages: ["Version: " + actualVersion + (this.config.requiredVersion ==
+        actualVersion ? "" : " (" + this.config.requiredVersion + " required)")]
     }
   }
 },
@@ -146,8 +146,8 @@ validationRules = [
     for (var e = new Enumerator(diagram.DiagramObjects); !e.atEnd(); e.moveNext()) {
       dgramobj = Repository.GetElementByID(e.item().ElementID)
       if (!contains(this.config[diagram.Type], dgramobj.Type))
-        this.findings.push('Diagram "' + diagram.Name + '" has element "' + dgramobj.Name +
-          '" has element "' + dgramobj.Type)
+        this.findings.push('Diagram "' + diagram.Name + '" has element "' + dgramobj.Name
+          + '" has element "' + dgramobj.Type)
     }
   }
 }

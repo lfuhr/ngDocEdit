@@ -119,7 +119,7 @@ var app = angular.module("app", [])
     
     // Download object JSON formatted
     $scope.updatedownload = function() {
-        var data = arr2src($scope.rules);
+        var data = "validationRules = " + arr2src($scope.rules);
         var blob = new Blob([data], { type: 'text/plain' });
         $scope.bloburl = URL.createObjectURL(blob);
         if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
