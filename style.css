@@ -1,7 +1,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     color: #333;
-    line-height: 145%;
+    line-height: 1.45;
     word-spacing: 2px;
     margin: auto;
     max-width: 1200px;
@@ -15,6 +15,8 @@ input, textarea {
     font-size: inherit;
     color: inherit;
     background-color: inherit;
+} input:hover, textarea:hover {
+    background-color:whitesmoke;
 }
 table {
     width: 100%;
@@ -31,32 +33,47 @@ th, td {
     padding: .1em;
     padding: .2em .5em .2em;
 }
-h1, h2, h3, header {
+h1, h2, h3 {
 	margin: 1.5em 0 .7em;
 	letter-spacing: -1px;
     word-spacing: normal;
     font-weight: 500
 }
-header {font-size: 3em; line-height: normal}
 b, strong, th {
     font-weight: 500;
 }
 *:invalid, .ng-invalid { background-color: #f2c3c3; }
 .hljs {background-color: transparent;}
 
+
+
+header h1 {
+    font-size: 3em;
+    line-height: normal;
+} header h1:before {
+    content: none;
+}
 #toc {
     background: whitesmoke;
-    float: right;
     padding: 1em 2em 2em;
-    margin: 1em;
 } #toc ul {
     list-style: none;
     padding: 0;
-} #toc toc1 {
+} #toc li {
+    cursor: pointer;
+} #toc .toc1 {
     font-weight: 500;
 } #toc h2:before {
     content: none;
 }
+@media (min-width: 960px) {
+    #toc {
+        margin: 1em;
+        float: right;
+        max-width: 500px;
+    }
+}
+
 
 /* Heading Numbering
 /*============================================================================*/

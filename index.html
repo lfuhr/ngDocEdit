@@ -11,11 +11,8 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body ng-app="app" ng-controller="controller">
-
-
-    
-	<coverpage>
-		<header>Enterprise Architect UML Model Validation</header>
+	<header>
+		<h1>Enterprise Architect UML Model Validation</h1>
         <div id="toc">
             <h2>Contents</h2>
             <ul>
@@ -28,9 +25,9 @@
 			<dt>Version:</dt> <dd>0.1</dd>
 		</dl>
 		<p>This document is only for INTERNAL use.</p>
-	</coverpage>
+	</header>
     
-    <div class="toc-supervised" ng-model="html">
+    <div class="toc-supervised">
 
         <h1>Usage</h1>
         <p>A rule is defined in a javascript object. The script then collects all rules and evaluates them in one single iteration over the EA-Model. Configuration is only showed when there is one.</p>
@@ -81,10 +78,8 @@
         </div> <!-- rule in rules -->
         <button ng-click="rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
-
-        <!--Can be <a ng-href="{{ dljson()  }}" download="rules.js">downloaded</a>   NOT in IE -->
-        <pre><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></pre>
-
+        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updatedownload()">downloaded</a>.
+        <pre id="completecode"><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></pre>
     </div>
 </body>
 </html>

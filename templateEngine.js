@@ -24,7 +24,6 @@ function arr2src(arr) {
     }).join('\n},\n{') + '\n}\n]'
 }
 
-
 /* Angular Template Engine
 /*============================================================================*/
 // Define model
@@ -70,11 +69,11 @@ var app = angular.module("app", [])
 //            ngModel.$parsers.push(function () {
 //                ngModel.$setValidity('codestring', false); });
 } }; })
-.directive('tocSupervised', function(){
+.directive('tocSupervised', ['$timeout', function(timeout){
     return {
         restrict:'C',
-        require:'?ngModel',
-        link : function(scope, elm, attrs,ngModel) {
+        //require:'?ngModel',
+        link : function(scope, elm, attrs, ngModel) {
             function updateHeadlines() {
                 scope.headlines=[];
                 angular.forEach(elm[0].querySelectorAll('h1,h2,h3,h4,h5,h6'), function(e){
@@ -84,6 +83,7 @@ var app = angular.module("app", [])
                         element: e
                     });
                 });
+                console.log("Called")
             }
             // avoid memoryleaks from dom references
             scope.$on('$destroy',function(){
@@ -94,26 +94,35 @@ var app = angular.module("app", [])
                 headline.element.scrollIntoView();
             }
             // when the html updates whe update the headlines
-            ngModel.$render = updateHeadlines;
-            updateHeadlines();
+            //ngModel.$render = updateHeadlines;
+            //updateHeadlines();
+            scope.$watch('rules', updateHeadlines, true);
+            timeout(updateHeadlines)
         }
     }
-})
+}])
 
 
 // Provides variables to the code
 .controller("controller", function ($scope, $window, $filter) {
 
     $scope.rules = validationRules; // load data
-
+    
     // Download object JSON formatted
-    $scope.dljson = function() {
+    $scope.updatedownload = function() {
         var data = arr2src($scope.rules);
         var blob = new Blob([data], { type: 'text/plain' });
-        var url = window.URL || window.webkitURL;
-        return url.createObjectURL(blob);
+        $scope.bloburl = URL.createObjectURL(blob);
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
+            window.navigator.msSaveOrOpenBlob(blob, "validationRules.js");
+            return false;
+        } else { // For any other Browser
+            return true;
+        }
     };
+    
     $scope.removeRule = function(index) {
         $scope.rules.splice(index, 1);
     };
+    
 });
