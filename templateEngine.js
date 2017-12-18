@@ -5,13 +5,16 @@ hljs.initHighlightingOnLoad();
 /* JSON-like formatting functions
 /*============================================================================*/
 function obj2src(obj) {
+    function unindent(str) {
+        return str.replace(/(?:\r\n  |\r  |\n  )/g, '\n');
+    }
     var functions = [], others = []
     for (var key in obj) {
         if (key.indexOf('$$') > -1) { continue; }
         else if (typeof(obj[key]) == 'function')
-            functions.push(key + ": " + obj[key].toString())
+            functions.push(key + ": " + unindent(obj[key].toString()))
         else
-            others.push(key + ": " + JSON.stringify(obj[key]))
+            others.push(key + ": " + JSON.stringify(obj[key],null,"  "))
     }
     return others.concat(functions).join(',\n')
 }
@@ -23,6 +26,12 @@ function arr2src(arr) {
         return indent('\n' + obj2src(obj))
     }).join('\n},\n{') + '\n}\n]'
 }
+
+// function arr2src(obj) {
+//     var replacer = function(key, value){
+//         return typeof(value) === "function" ? value.toString() : value  }
+//     return JSON.stringify(obj, replacer, 2)
+// }
 
 /* Angular Template Engine
 /*============================================================================*/
