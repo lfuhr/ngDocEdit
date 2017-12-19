@@ -86,8 +86,8 @@ var app = angular.module("app", [])
             function updateHeadlines() {
                 scope.headlines=[];
                 angular.forEach(elm[0].querySelectorAll('h1,h2,h3,h4,h5,h6'), function(e){
-                    scope.headlines.push({ 
-                        level: e.tagName[1], 
+                    scope.headlines.push({
+                        level: e.tagName[1],
                         label: angular.element(e).text(),
                         element: e
                     });
@@ -116,10 +116,10 @@ var app = angular.module("app", [])
 .controller("controller", function ($scope, $window, $filter) {
 
     $scope.rules = validationRules; // load data
-    
+
     // Download object JSON formatted
     $scope.updatedownload = function() {
-        var data = "validationRules = " + arr2src($scope.rules);
+        var data = "validationRules = " + arr2src($scope.rules).replace(/(?:\r\n|\r|\n)/g, '\r\n');;
         var blob = new Blob([data], { type: 'text/plain' });
         $scope.bloburl = URL.createObjectURL(blob);
         if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
@@ -129,9 +129,9 @@ var app = angular.module("app", [])
             return true;
         }
     };
-    
+
     $scope.removeRule = function(index) {
         $scope.rules.splice(index, 1);
     };
-    
+
 });
