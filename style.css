@@ -77,8 +77,9 @@ header h1 {
 
 /* Heading Numbering
 /*============================================================================*/
-body, .toc-supervised { counter-reset: h1counter; }
-h1, .toc1{ counter-reset: h2counter; }
+body, .toc-supervised { counter-reset: h1counter h2counter h3counter h4counter
+    h5counter h6counter; }
+h1, .toc1{ counter-reset: h2counter h3counter h4counter h5counter h6counter; }
 h1:before, .toc1:before {
     content: counter(h1counter) "\0000a0\0000a0";
     counter-increment: h1counter;
@@ -86,19 +87,19 @@ h1:before, .toc1:before {
 h2:before, .toc2:before {
     content: counter(h1counter) "." counter(h2counter) "\0000a0\0000a0";
     counter-increment: h2counter;
-    counter-reset: h3counter;
+    counter-reset: h3counter h4counter h5counter h6counter;
 }
 h3:before, .toc3:before {
     content: counter(h1counter) "." counter(h2counter) "." counter(h3counter)
         "\0000a0\0000a0";
     counter-increment: h3counter;
-    counter-reset: h4counter;
+    counter-reset: h4counter h5counter h6counter;
 }
 h4:before, .toc4:before {
     content: counter(h1counter) "." counter(h2counter) "." counter(h3counter)
         "." counter(h3counter)  "\0000a0\0000a0";
     counter-increment: h4counter;
-    counter-reset: h5counter;
+    counter-reset: h5counter h6counter;
 }
 h5:before, .toc5:before {
     content: counter(h1counter) "." counter(h2counter) "." counter(h3counter)

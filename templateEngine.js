@@ -63,7 +63,7 @@ var app = angular.module("app", [])
         return otherRule.requiredBy && otherRule.requiredBy.indexOf(rule.ID) > -1
     }).map(function(r){return r.ID})).join(', ');
 }; })
-.filter('highlight', function($sce) {
+.filter('highlight', function() {
   return function(input, lang) {return hljs.highlight('javascript', input).value; }
 })
 .filter('unsafe', function($sce) { return $sce.trustAsHtml; })
