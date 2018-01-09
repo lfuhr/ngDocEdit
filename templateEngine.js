@@ -4,9 +4,11 @@ hljs.initHighlightingOnLoad();
 
 /* JSON-like formatting functions
 /*============================================================================*/
+var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g
+
 function obj2src(obj) {
     function unindent(str) {
-        return str.replace(/(?:\r\n  |\r  |\n  )/g, '\n');
+        return str.replace(LINEBREAK_TAB, '\n');
     }
     var functions = [], others = []
     for (var key in obj) {
@@ -14,13 +16,13 @@ function obj2src(obj) {
         else if (typeof(obj[key]) == 'function')
             functions.push(key + ": " + unindent(obj[key].toString()))
         else
-            others.push(key + ": " + JSON.stringify(obj[key],null,"  "))
+            others.push(key + ": " + JSON.stringify(obj[key],null,TAB))
     }
     return others.concat(functions).join(',\n')
 }
 function arr2src(arr) {
     function indent(str) {
-        return str.replace(/(?:\r\n|\r|\n)/g, '\n' + '  ');
+        return str.replace(/(?:\r\n|\r|\n)/g, '\n' + TAB);
     }
     return '[\n{' + arr.map( function(obj) {
         return indent('\n' + obj2src(obj))
@@ -119,7 +121,7 @@ var app = angular.module("app", [])
 
     // Download object JSON formatted
     $scope.updatedownload = function() {
-        var data = "validationRules = " + arr2src($scope.rules).replace(/(?:\r\n|\r|\n)/g, '\r\n');;
+        var data = "validationRules = " + arr2src($scope.rules).replace(/(?:\r\n|\r|\n)/g, '\r\n');
         var blob = new Blob([data], { type: 'text/plain' });
         $scope.bloburl = URL.createObjectURL(blob);
         if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE

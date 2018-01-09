@@ -7,10 +7,11 @@
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
 	<script src="../Model%20Validation/validationRules.js"></script>
 	<script src="templateEngine.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body ng-app="app" ng-controller="controller">
+    <div id="page">
 	<header>
 		<h1>Enterprise Architect UML Model Validation</h1>
         <div id="toc">
@@ -80,6 +81,7 @@
         <h1>Whole Sourcecode</h1>
         Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updatedownload()">downloaded</a>.
         <pre id="completecode"><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></pre>
+    </div>
     </div>
 </body>
 </html>

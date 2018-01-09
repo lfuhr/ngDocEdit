@@ -3,9 +3,13 @@ body {
     color: #333;
     line-height: 1.45;
     word-spacing: 2px;
+    margin: 0;
+}
+#page {
     margin: auto;
     max-width: 1200px;
-    padding: 2%;
+    padding: 1em;
+    position: relative;
 }
 input, textarea {
     width: 100%;
@@ -39,9 +43,16 @@ h1, h2, h3 {
     word-spacing: normal;
     font-weight: 500
 }
-b, strong, th {
+th {
     font-weight: 500;
 }
+code {
+    tab-size: 2;
+    word-spacing: 0; /*reset*/
+}
+@media print { code {
+    white-space: pre-wrap; word-break: keep-all;
+}}
 *:invalid, .ng-invalid { background-color: #f2c3c3; }
 .hljs {background-color: transparent;}
 
@@ -113,3 +124,17 @@ h6:before, .toc6:before {
     counter-increment: h6counter;
 }
 /*============================================================================*/
+
+#editControls {
+    position:fixed;
+    background: #555;
+    padding: 3px;
+    width: 100%;
+    z-index: 100;
+    display: none;
+}
+#editControls a,#editControls a:link,#editControls a:visited,#editControls a:hover, #editControls a:active {
+    text-decoration: none;
+    color: white;
+    padding: 3px;
+}
