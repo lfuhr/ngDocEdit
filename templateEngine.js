@@ -16,7 +16,7 @@ function obj2src(obj) {
         else if (typeof(obj[key]) == 'function')
             functions.push(key + ": " + unindent(obj[key].toString()))
         else
-            others.push(key + ": " + JSON.stringify(obj[key],null,TAB))
+            others.push(key + ": " + angular.toJson(obj[key],null,TAB))
     }
     return others.concat(functions).join(',\n');
 }
@@ -46,6 +46,13 @@ var app = angular.module("app", [])
 })
 .filter('obj2src', function () { return obj2src; })
 .filter('arr2src', function () { return arr2src; })
+.filter('highlight', function() {
+  return function(input, lang) {return hljs.highlight('javascript', input).value; }
+})
+.filter('unsafe', function($sce) { return $sce.trustAsHtml; })
+
+
+// Two filters that really depend on the context
 .filter('evalsOn', function() { // Extract specific infos to the users
     var evalfunctions = ["diagram","element","package","structured"];
     return function(input){
@@ -59,18 +66,14 @@ var app = angular.module("app", [])
         return otherRule.requiredBy && otherRule.requiredBy.indexOf(rule.ID) > -1
     }).map(function(r){return r.ID})).join(', ');
 }; })
-.filter('highlight', function() {
-  return function(input, lang) {return hljs.highlight('javascript', input).value; }
-})
-.filter('unsafe', function($sce) { return $sce.trustAsHtml; })
 
 
 // 2-Way code-string conversion
 .directive('codestring', function() { return {
         restrict: 'A', require: 'ngModel',
         link: function(scope, element, attr, ngModel) {
-            ngModel.$parsers.push( JSON.parse );
-            ngModel.$formatters.push( JSON.stringify);
+            ngModel.$parsers.push( angular.fromJson );
+            ngModel.$formatters.push( angular.toJson);
 } }; })
 .directive('tocSupervised', ['$timeout', function(timeout){
     return {
@@ -106,15 +109,12 @@ var app = angular.module("app", [])
     restrict: "A",
     require: "ngModel",
     link: function(scope, element, attrs, ngModel) {
-
       function read() {
         ngModel.$setViewValue(element.html());
       }
-
       ngModel.$render = function() {
         element.html(ngModel.$viewValue || "");
       };
-
       element.bind("blur keyup change", function() {
         scope.$apply(read);
       });
@@ -132,7 +132,7 @@ var app = angular.module("app", [])
     // Download object JSON formatted
     $scope.updatedownload = function() {
         var data = "validationRules = " + arr2src($scope.rules) +
-            "\ndocumentation = " + JSON.stringify($scope.docu,null,TAB)
+            "\ndocumentation = " + angular.toJson($scope.docu,null,TAB)
 
         data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n');
         var blob = new Blob([data], { type: 'text/plain' });

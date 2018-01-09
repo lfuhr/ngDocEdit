@@ -93,7 +93,7 @@ body, .toc-supervised { counter-reset: h1counter h2counter h3counter h4counter
 h1:before, .toc1:before {
     content: counter(h1counter) "\0000a0\0000a0";
     counter-increment: h1counter;
-} h1, toc1 {counter-reset: h2counter h3counter h4counter h5counter h6counter;}
+} h1, toc1 {counter-reset: h2counter h3counter h4counter h5counter h6counter;
 }
 h2:before, .toc2:before {
     content: counter(h1counter) "." counter(h2counter) "\0000a0\0000a0";
@@ -134,7 +134,8 @@ h6:before, .toc6:before {
     z-index: 100;
     display: none;
 }
-#editControls a,#editControls a:link,#editControls a:visited,#editControls a:hover, #editControls a:active {
+#editControls a,#editControls a:link,#editControls a:visited,#editControls
+        a:hover, #editControls a:active {
     text-decoration: none;
     color: white;
     padding: 3px;
