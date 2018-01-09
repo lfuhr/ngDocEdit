@@ -18,7 +18,7 @@ function obj2src(obj) {
         else
             others.push(key + ": " + JSON.stringify(obj[key],null,TAB))
     }
-    return others.concat(functions).join(',\n')
+    return others.concat(functions).join(',\n');
 }
 function arr2src(arr) {
     function indent(str) {
@@ -28,12 +28,6 @@ function arr2src(arr) {
         return indent('\n' + obj2src(obj))
     }).join('\n},\n{') + '\n}\n]'
 }
-
-// function arr2src(obj) {
-//     var replacer = function(key, value){
-//         return typeof(value) === "function" ? value.toString() : value  }
-//     return JSON.stringify(obj, replacer, 2)
-// }
 
 /* Angular Template Engine
 /*============================================================================*/
@@ -52,7 +46,7 @@ var app = angular.module("app", [])
 })
 .filter('obj2src', function () { return obj2src; })
 .filter('arr2src', function () { return arr2src; })
-.filter('evalsOn', function() {
+.filter('evalsOn', function() { // Extract specific infos to the users
     var evalfunctions = ["diagram","element","package","structured"];
     return function(input){
         return Object.keys(input).filter(function(property){
@@ -77,13 +71,10 @@ var app = angular.module("app", [])
         link: function(scope, element, attr, ngModel) {
             ngModel.$parsers.push( JSON.parse );
             ngModel.$formatters.push( JSON.stringify);
-//            ngModel.$parsers.push(function () {
-//                ngModel.$setValidity('codestring', false); });
 } }; })
 .directive('tocSupervised', ['$timeout', function(timeout){
     return {
-        restrict:'C',
-        //require:'?ngModel',
+        restrict: 'C',
         link : function(scope, elm, attrs, ngModel) {
             function updateHeadlines() {
                 scope.headlines=[];
@@ -94,7 +85,6 @@ var app = angular.module("app", [])
                         element: e
                     });
                 });
-                console.log("Called")
             }
             // avoid memoryleaks from dom references
             scope.$on('$destroy',function(){
@@ -104,24 +94,47 @@ var app = angular.module("app", [])
             scope.scrollTo=function(headline){
                 headline.element.scrollIntoView();
             }
-            // when the html updates whe update the headlines
-            //ngModel.$render = updateHeadlines;
-            //updateHeadlines();
+            // Update if object content (3rd arg true) has changed
             scope.$watch('rules', updateHeadlines, true);
+            scope.$watch('docu', updateHeadlines, true);
             timeout(updateHeadlines)
         }
     }
 }])
+.directive("contenteditable", function() {
+  return {
+    restrict: "A",
+    require: "ngModel",
+    link: function(scope, element, attrs, ngModel) {
+
+      function read() {
+        ngModel.$setViewValue(element.html());
+      }
+
+      ngModel.$render = function() {
+        element.html(ngModel.$viewValue || "");
+      };
+
+      element.bind("blur keyup change", function() {
+        scope.$apply(read);
+      });
+    }
+  };
+})
 
 
 // Provides variables to the code
 .controller("controller", function ($scope, $window, $filter) {
 
     $scope.rules = validationRules; // load data
+    $scope.docu = documentation;
 
     // Download object JSON formatted
     $scope.updatedownload = function() {
-        var data = "validationRules = " + arr2src($scope.rules).replace(/(?:\r\n|\r|\n)/g, '\r\n');
+        var data = "validationRules = " + arr2src($scope.rules) +
+            "\ndocumentation = " + JSON.stringify($scope.docu,null,TAB)
+
+        data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n');
         var blob = new Blob([data], { type: 'text/plain' });
         $scope.bloburl = URL.createObjectURL(blob);
         if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
@@ -135,5 +148,7 @@ var app = angular.module("app", [])
     $scope.removeRule = function(index) {
         $scope.rules.splice(index, 1);
     };
+
+    $scope.leadertext = "Editable"
 
 });

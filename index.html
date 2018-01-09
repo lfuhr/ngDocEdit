@@ -2,6 +2,12 @@
 <html>
 <head>
 	<title>Enterprise Architect UML Model Validation</title>
+
+    <!-- Inline Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <script src="../InlineEditor/editor.js"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/xcode.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
@@ -13,34 +19,24 @@
 <body ng-app="app" ng-controller="controller">
     <div id="page">
 	<header>
-		<h1>Enterprise Architect UML Model Validation</h1>
+		<h1 ng-model="docu.title" contenteditable="true"></h1>
         <div id="toc">
             <h2>Contents</h2>
-            <ul>
-            <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
-                {{headline.label}} </li>
-            </ul>
+            <ul> <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
+                {{headline.label}}</li> </ul>
         </div>
 		<dl>
-			<dt>Author:</dt> <dd>Ludwig Fuhr</dd>
-			<dt>Version:</dt> <dd>0.1</dd>
+    	<dt>Author:</dt> <dd ng-model="docu.author" contenteditable="true"></dd>
+			<dt>Version:</dt> <dd ng-model="docu.version" contenteditable="true"></dd>
 		</dl>
-		<p>This document is only for INTERNAL use.</p>
+		<p>This document is only for <span ng-model="docu.scope" contenteditable="true"></span> use.</p>
 	</header>
     
     <div class="toc-supervised">
 
-        <h1>Usage</h1>
-        <p>A rule is defined in a javascript object. The script then collects all rules and evaluates them in one single iteration over the EA-Model. Configuration is only showed when there is one.</p>
-        <p></p>
+        <div class="preamble wysiwyg" ng-model="docu.preamble" contenteditable="true"></div>
 
-        <h1>How to build Rules</h1>
-        <p>Rules can be added using the button in this Document. The implementation can only be done in a external code editor. Enterprise Architect is recommended, because of autocompletion capabilities on its API.</p>
-        <h2>Implicit properties</h2>
-        <p>Every Rule has an implicated <em>findings</em> array that can be used. If the result function is not implemented, the predefined one assumes no findings for success.</p>
 
-        <h1>List of Rules</h1>
-        <p>Here you can add and remove rules. Empty but required fields are highlighted.</p>
         <div data-ng-repeat="rule in rules">
 
             <button  style="float: right;" ng-click="removeRule($index)">Remove</button>
@@ -73,6 +69,10 @@
                 <tr>
                     <th>Sourcecode</th>
                     <td><pre><code ng-bind-html="rule | obj2src | highlight | unsafe"></code></pre></td>
+                </tr>
+                <tr>
+                    <th>Fancy</th>
+                    <td class='wysiwyg' contenteditable="true" ng-model="rule.fancy"></td>
                 </tr>
             </table>
 
