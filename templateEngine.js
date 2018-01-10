@@ -2,31 +2,47 @@
 // Syntax Highlighting
 hljs.initHighlightingOnLoad();
 
-/* JSON-like formatting functions
+/* JSON-like formatting function that can serialize functions
 /*============================================================================*/
 var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g
 
-function obj2src(obj) {
-    function unindent(str) {
-        return str.replace(LINEBREAK_TAB, '\n');
-    }
-    var functions = [], others = []
-    for (var key in obj) {
-        if (key.indexOf('$$') > -1) { continue; }
-        else if (typeof(obj[key]) == 'function')
-            functions.push(key + ": " + unindent(obj[key].toString()))
-        else
-            others.push(key + ": " + angular.toJson(obj[key],null,TAB))
-    }
-    return others.concat(functions).join(',\n');
-}
-function arr2src(arr) {
-    function indent(str) {
-        return str.replace(/(?:\r\n|\r|\n)/g, '\n' + TAB);
-    }
-    return '[\n{' + arr.map( function(obj) {
-        return indent('\n' + obj2src(obj))
-    }).join('\n},\n{') + '\n}\n]'
+function serialize(obj, option) {
+	const UNINDENT = 'unindent', STRIP_WRAPPING = 'strip_wrapping'
+
+	function indent(str) { return str.replace(/(?:\r\n|\r|\n)/g, '\n' + TAB); }
+
+    if (option == STRIP_WRAPPING && typeof(obj) == 'object')
+    	return serialize(obj,UNINDENT).split('\n').slice(1, -1).join('\n')
+    
+    if (option == UNINDENT) return serialize(obj).replace(LINEBREAK_TAB, '\n');
+
+    if (obj === undefined) return 'undefined'
+    if (obj === null) return 'null'
+
+	switch (obj.constructor) {
+		case Function:
+			var funstring = obj.toString()
+		    if (funstring.indexOf('\n') > -1)
+    			while(funstring.split('\n')[1].startsWith(TAB + TAB))
+    				funstring = funstring.replace(LINEBREAK_TAB, '\n')
+			return funstring;
+		case Array:
+			return '[' + obj.map(
+				function(value) { return indent('\n' + serialize(value))}
+			).join(',') + '\n]'
+		case Object:
+			var result = []
+			angular.forEach(obj, function(value, key)  {
+				if (key.indexOf('$$') == -1) {
+					if (!key.match(/[a-z_A-Z]*/)) key = angular.toJson(key)
+					result.push(key + ': ' + serialize(value) )
+					// upper is a javscript key not a json one
+			}
+			})
+			return '{' + indent('\n' + result.join(',\n')) + '\n}'
+		default:
+			return angular.toJson(obj)
+	}
 }
 
 /* Angular Template Engine
@@ -44,12 +60,11 @@ var app = angular.module("app", [])
 .filter('string', function () {
     return function(input) { return input.toString(); };
 })
-.filter('obj2src', function () { return obj2src; })
-.filter('arr2src', function () { return arr2src; })
 .filter('highlight', function() {
   return function(input, lang) {return hljs.highlight('javascript', input).value; }
 })
 .filter('unsafe', function($sce) { return $sce.trustAsHtml; })
+.filter('serialize', function() { return serialize })
 
 
 // Two filters that really depend on the context
@@ -131,8 +146,8 @@ var app = angular.module("app", [])
 
     // Download object JSON formatted
     $scope.updatedownload = function() {
-        var data = "validationRules = " + arr2src($scope.rules) +
-            "\ndocumentation = " + angular.toJson($scope.docu,null,TAB)
+        var data = "validationRules = " + serialize($scope.rules,'unindent') +
+            "\ndocumentation = " + serialize($scope.docu)
 
         data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n');
         var blob = new Blob([data], { type: 'text/plain' });

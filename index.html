@@ -68,7 +68,7 @@
                 </tr>
                 <tr>
                     <th>Sourcecode</th>
-                    <td><pre><code ng-bind-html="rule | obj2src | highlight | unsafe"></code></pre></td>
+                    <td><pre><code ng-bind-html="rule | serialize : 'strip_wrapping' | highlight | unsafe"></code></pre></td>
                 </tr>
                 <tr>
                     <th>Fancy</th>
@@ -80,7 +80,7 @@
         <button ng-click="rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
         Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updatedownload()">downloaded</a>.
-        <pre id="completecode"><code ng-bind-html="rules | arr2src | highlight | unsafe"></code></pre>
+        <pre id="completecode"><code ng-bind-html="rules | serialize : 'unindent' | highlight | unsafe"></code></pre>
     </div>
     </div>
 </body>
