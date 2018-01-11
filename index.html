@@ -8,38 +8,64 @@
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <script src="../InlineEditor/editor.js"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/xcode.min.css">
+    <!-- Syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/xcode.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
-	<script src="../Model%20Validation/validationRules.js"></script>
-	<script src="templateEngine.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Data -->
+    <script src="../Model%20Validation/validationRules.js"></script>
+
+    <!-- Template Engine (requires data and uses syntax highlighting) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="templateEngine.js"></script>
+
+    <!-- Style -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Custom scripts -->
+    <script type="text/javascript">
+        // Two filters that really depend on the context
+        templateEngine.filter('evalsOn', function() { // Extract specific infos to the users
+            var evalfunctions = ["diagram","element","package","structured"]
+            return function(input){
+                return Object.keys(input).filter(function(property) {
+                    return evalfunctions.indexOf(property) > -1
+                }).join(', ')
+            }
+        })
+        .filter('requirements', function () { return function(rules, rule) {
+            return (rules.filter(function(otherRule){
+                return otherRule.requiredBy && otherRule.requiredBy.indexOf(rule.ID) > -1
+            }).map(function(r){return r.ID})).join(', ')
+        }})
+    </script>
+
 </head>
 <body ng-app="app" ng-controller="controller">
     <div id="page">
 	<header>
-		<h1 ng-model="docu.title" contenteditable="true"></h1>
+		<h1 ng-model="data.title" contenteditable="true"></h1>
         <div id="toc">
             <h2>Contents</h2>
             <ul> <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
                 {{headline.label}}</li> </ul>
         </div>
 		<dl>
-    	<dt>Author:</dt> <dd ng-model="docu.author" contenteditable="true"></dd>
-			<dt>Version:</dt> <dd ng-model="docu.version" contenteditable="true"></dd>
+    	<dt>Author:</dt> <dd ng-model="data.author" contenteditable="true"></dd>
+			<dt>Version:</dt> <dd ng-model="data.version" contenteditable="true"></dd>
 		</dl>
-		<p>This document is only for <span ng-model="docu.scope" contenteditable="true"></span> use.</p>
+		<p>This document is only for <span ng-model="data.scope" contenteditable="true"></span> use.</p>
 	</header>
     
     <div class="toc-supervised">
 
-        <div class="preamble wysiwyg" ng-model="docu.preamble" contenteditable="true"></div>
+        <div class="preamble wysiwyg" ng-model="data.preamble" contenteditable="true"></div>
 
 
-        <div data-ng-repeat="rule in rules">
+        <div data-ng-repeat="rule in data.rules">
 
-            <button  style="float: right;" ng-click="removeRule($index)">Remove</button>
+            <button  style="float: right;" ng-click="data.rules.splice($index, 1)">Remove</button>
             <h2>{{rule.description}}</h2>
             <table>
                 <tr>
@@ -58,9 +84,9 @@
                     <th>Required By</th>
                     <td><input type="text" codestring ng-model="rule.requiredBy"/></td>
                 </tr>
-                <tr ng-if="rule | requirements">
+                <tr ng-if="data.rules | requirements : rule">
                     <th>Requires</th>
-                    <td>{{ rule | requirements }}</td>
+                    <td>{{ data.rules | requirements : rule }}</td>
                 </tr>
                 <tr>
                     <th>Evaluated on</th>
@@ -77,10 +103,10 @@
             </table>
 
         </div> <!-- rule in rules -->
-        <button ng-click="rules.push({})"> Add one</button>
+        <button ng-click="data.rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
-        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updatedownload()">downloaded</a>.
-        <pre id="completecode"><code ng-bind-html="rules | serialize : 'unindent' | highlight | unsafe"></code></pre>
+        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updataBloburl(data | serialize | unindent : 2)">downloaded</a>.
+        <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight | unsafe"></code></pre>
     </div>
     </div>
 </body>
