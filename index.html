@@ -57,16 +57,18 @@
 		</dl>
 		<p>This document is only for <span ng-model="data.scope" contenteditable="true"></span> use.</p>
 	</header>
-    
+
     <div class="toc-supervised">
 
         <div class="preamble wysiwyg" ng-model="data.preamble" contenteditable="true"></div>
 
 
-        <div data-ng-repeat="rule in data.rules">
+        <div ng-repeat="rule in data.rules"
+        onfocusin="this.getElementsByTagName('button')[0].style.display = 'block'"
+        onfocusout="var b=this.getElementsByTagName('button')[0]; if (!b.parentElement.querySelector('button:hover')) b.style.display = 'none'">
 
-            <button  style="float: right;" ng-click="data.rules.splice($index, 1)">Remove</button>
-            <h2>{{rule.description}}</h2>
+            <button  style="float: right;display: none;" ng-click="data.rules.splice($index, 1)">Remove</button>
+            <h2 ng-model="rule.description" contenteditable="true"></h2>
             <table>
                 <tr>
                     <th>Description</th>
@@ -94,7 +96,7 @@
                 </tr>
                 <tr>
                     <th>Sourcecode</th>
-                    <td><pre><code ng-bind-html="rule | serialize : 'strip_wrapping' | highlight | unsafe"></code></pre></td>
+                    <td><pre><code ng-bind-html="rule | serialize | strip_wrapping | highlight"></code></pre></td>
                 </tr>
                 <tr>
                     <th>Fancy</th>
@@ -105,8 +107,8 @@
         </div> <!-- rule in rules -->
         <button ng-click="data.rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
-        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updataBloburl(data | serialize | unindent : 2)">downloaded</a>.
-        <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight | unsafe"></code></pre>
+        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updataBloburl(data | serialize | unindent : 2)">downloaded</a> or copied if you doubleclick it.
+        <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
     </div>
     </div>
 </body>

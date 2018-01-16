@@ -2,6 +2,14 @@
 // Syntax Highlighting
 if ((typeof(hljs) != "undefined")) hljs.initHighlightingOnLoad()
 
+angular.element(document).on('dblclick', 'code', function() {
+    var range = document.createRange();
+    range.selectNodeContents(this);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+})
+
 
 /* JSON-like formatting function that can serialize functions
 /*============================================================================*/
@@ -18,7 +26,7 @@ function serialize(obj) {
 		case Function:
 			var funstring = obj.toString()
 		    if (funstring.indexOf('\n') > -1)
-    			while(funstring.split('\n')[1].startsWith(TAB + TAB))
+    			while(funstring.split('\n')[1].indexOf(TAB + TAB)==0)
     				funstring = funstring.replace(LINEBREAK_TAB, '\n')
 			return funstring
 		case Array:
@@ -45,6 +53,9 @@ function serialize(obj) {
 // Define model
 var templateEngine = angular.module("app", [])
 
+// Allow raw html
+.config(function($sceProvider) {$sceProvider.enabled(false)})
+
 // Allow download from blob
 .config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/)
@@ -58,7 +69,7 @@ var templateEngine = angular.module("app", [])
 .filter('highlight', function() {
   return function(input, lang) {return hljs.highlight('javascript', input).value }
 })
-.filter('unsafe', function($sce) { return $sce.trustAsHtml })
+//.filter('unsafe', function($sce) { return $sce.trustAsHtml })
 .filter('serialize', function() { return serialize })
 .filter('unindent', function() {return function(str, n) {
     for (var i = 0; i < (n || 1); i++) {
@@ -66,7 +77,7 @@ var templateEngine = angular.module("app", [])
     return str
 }})
 .filter('strip_wrapping', function() { return function(json) {
-    return json.split('\n').slice(1, -1).join('\n').replace(LINEBREAK_TAB, '\n')
+    return json.replace(LINEBREAK_TAB, '\n').split('\n').slice(1, -1).join('\n')
 }})
 
 

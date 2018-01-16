@@ -1,9 +1,10 @@
 body {
     font-family: 'Roboto', sans-serif;
     color: #333;
-    line-height: 1.45;
+    line-height: 1.4;
     word-spacing: 2px;
     margin: 0;
+    font-size: 87.5%;
 }
 #page {
     margin: auto;
@@ -22,6 +23,7 @@ input, textarea {
 } input:hover, textarea:hover {
     background-color:whitesmoke;
 }
+img {max-width: 100%}
 table {
     width: 100%;
     table-layout: fixed;
@@ -55,7 +57,6 @@ code {
 }}
 *:invalid, .ng-invalid { background-color: #f2c3c3; }
 .hljs {background-color: transparent;}
-
 
 
 header h1 {
@@ -125,18 +126,3 @@ h6:before, .toc6:before {
     counter-increment: h6counter;
 }
 /*============================================================================*/
-
-#editControls {
-    position:fixed;
-    background: #555;
-    padding: 3px;
-    width: 100%;
-    z-index: 100;
-    display: none;
-}
-#editControls a,#editControls a:link,#editControls a:visited,#editControls
-        a:hover, #editControls a:active {
-    text-decoration: none;
-    color: white;
-    padding: 3px;
-}
