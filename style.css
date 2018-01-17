@@ -26,19 +26,21 @@ input, textarea {
 img {max-width: 100%}
 table {
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
-}
-th {
-    width: 6.5em;
-    text-align: left;
-    background-color: whitesmoke;
 }
 th, td {
     border: 1px solid grey;
     padding: .1em;
     padding: .2em .5em .2em;
+    vertical-align: top;
 }
+th {
+    width: 6.5em;
+    text-align: left;
+    background-color: whitesmoke;
+    vertical-align: middle;
+}
+td>* {margin: 0;}
 h1, h2, h3 {
 	margin: 1.5em 0 .7em;
 	letter-spacing: -1px;
