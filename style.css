@@ -12,18 +12,11 @@ body {
     padding: 1em;
     position: relative;
 }
-input, textarea {
-    width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    border: none;
-    font-size: inherit;
-    color: inherit;
-    background-color: inherit;
-} input:hover, textarea:hover {
-    background-color:whitesmoke;
+img {
+	max-width: 100%;
 }
-img {max-width: 100%}
+
+/********** Table **********/
 table {
     width: 100%;
     border-collapse: collapse;
@@ -33,40 +26,60 @@ th, td {
     padding: .1em;
     padding: .2em .5em .2em;
     vertical-align: top;
-}
-th {
+} th {
     width: 6.5em;
     text-align: left;
     background-color: whitesmoke;
     vertical-align: middle;
+    font-weight: 500;
+} td>* {
+	margin: 0;
 }
-td>* {margin: 0;}
+
+/********** Headings **********/
 h1, h2, h3 {
 	margin: 1.5em 0 .7em;
 	letter-spacing: -1px;
     word-spacing: normal;
     font-weight: 500
 }
-th {
-    font-weight: 500;
-}
-code {
-    tab-size: 2;
-    word-spacing: 0; /*reset*/
-}
-@media print { code {
-    white-space: pre-wrap; word-break: keep-all;
-}}
-*:invalid, .ng-invalid { background-color: #f2c3c3; }
-.hljs {background-color: transparent;}
-
-
 header h1 {
     font-size: 3em;
     line-height: normal;
 } header h1:before {
     content: none;
 }
+
+/********** Input **********/
+input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+    background-color: inherit;
+}
+input:hover, textarea:hover {
+    background-color:whitesmoke;
+}*:invalid, .ng-invalid {
+	background-color: #f2c3c3;
+}
+
+/********** Input **********/
+code {
+    tab-size: 2;
+    word-spacing: 0; /*reset*/
+} @media print { code {
+	/* Prevent to cut off */
+    white-space: pre-wrap;
+    word-break: keep-all;
+}}
+
+.hljs {
+	background-color: transparent;
+}
+
+/********** Table of contents **********/
 #toc {
     background: whitesmoke;
     padding: 1em 2em 2em;
@@ -88,9 +101,7 @@ header h1 {
     }
 }
 
-
-/* Heading Numbering
-/*============================================================================*/
+/********** Heading Numbering **********/
 body, .toc-supervised { counter-reset: h1counter h2counter h3counter h4counter
     h5counter h6counter; }
 h1:before, .toc1:before {
@@ -127,4 +138,3 @@ h6:before, .toc6:before {
         "\0000a0\0000a0";
     counter-increment: h6counter;
 }
-/*============================================================================*/

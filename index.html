@@ -107,6 +107,7 @@
         </div> <!-- rule in rules -->
         <button ng-click="data.rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
+        <!-- <button blob_data="data | serialize | unindent : 2", filename="validationRules.js.txt"></button> -->
         Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updataBloburl(data | serialize | unindent : 2)">downloaded</a> or copied if you doubleclick it.
         <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
     </div>
