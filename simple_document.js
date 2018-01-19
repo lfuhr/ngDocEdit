@@ -1,0 +1,1 @@
+var content = "<h1>This is a title!</h1> <p>This is just some example text to start.</p> <p>Edit it and press Ctrl+s</p>"

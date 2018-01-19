@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inline Edit</title>
+	<!-- Inline Editor -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<script src="wysiwyg.js"></script>
+
+	<!-- Template Engine (requires data and uses syntax highlighting) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="ngDocEdit.js"></script>
+
+	<!-- Data -->
+	<script src="simple_document.js"></script>
+	<script>ngDocEdit.controller("controller", function ($scope) {$scope.content = content;});</script>
+
+	<!-- Style -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body ng-app="ngDocEdit" ng-controller="controller">
+	<div id="toc">
+		<h2>Contents</h2>
+		<ul> <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
+		{{headline.label}}</li> </ul>
+	</div>
+	<div id="page" class="toc-supervised">
+		<div class='wysiwyg' contenteditable="true" ng-model="content"></div>
+	</div>
+	<ctrl-s blobdata="'content = ' + (content | serialize)"  filename="simple_document.js"/>
+
+</body>
+</html>

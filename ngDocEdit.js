@@ -147,7 +147,6 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             var dl = function() {downloadBlob(scope.blobdata, attrs.filename)};
             if (element.get(0).tagName == 'BUTTON')
                 element.bind('click', dl);
-            console.log(attrs)
             if ('ctrlS' in attrs || element.get(0).tagName == 'CTRL-S') {
                 angular.element(document).bind('keydown', function(event) {
                     if(event.ctrlKey && (event.which == 83)) {
