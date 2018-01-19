@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700');
 body {
     font-family: 'Roboto', sans-serif;
     color: #333;
@@ -5,6 +6,10 @@ body {
     word-spacing: 2px;
     margin: 0;
     font-size: 87.5%;
+} @media print {
+	body {
+		color: black;
+	}
 }
 #page {
     margin: auto;
@@ -19,6 +24,7 @@ img {
 /********** Table **********/
 table {
     width: 100%;
+    margin: 1em 0 1em;
     border-collapse: collapse;
 }
 th, td {
@@ -37,11 +43,11 @@ th, td {
 }
 
 /********** Headings **********/
-h1, h2, h3 {
+h1, h2 {
 	margin: 1.5em 0 .7em;
 	letter-spacing: -1px;
     word-spacing: normal;
-    font-weight: 500
+    font-weight: 500;
 }
 header h1 {
     font-size: 3em;
@@ -73,10 +79,12 @@ code {
 	/* Prevent to cut off */
     white-space: pre-wrap;
     word-break: keep-all;
+    max-height: none;
 }}
 
 .hljs {
 	background-color: transparent;
+	padding: 0;
 }
 
 /********** Table of contents **********/

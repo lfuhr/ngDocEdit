@@ -6,27 +6,27 @@
     <!-- Inline Editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <script src="../InlineEditor/editor.js"></script>
+    <script src="wysiwyg.js"></script>
 
     <!-- Syntax highlighting -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/xcode.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
 
-    <!-- Data -->
-    <script src="../Model%20Validation/validationRules.js"></script>
-
     <!-- Template Engine (requires data and uses syntax highlighting) -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-    <script src="templateEngine.js"></script>
+    <script src="ngDocEdit.js"></script>
+
+    <!-- Data -->
+    <script src="../Model%20Validation/validationRules.js"></script>
+    <script>ngDocEdit.controller("controller", function ($scope) {$scope.data = jsonData;});</script>
 
     <!-- Style -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <!-- Custom scripts -->
     <script type="text/javascript">
         // Two filters that really depend on the context
-        templateEngine.filter('evalsOn', function() { // Extract specific infos to the users
+        ngDocEdit.filter('evalsOn', function() { // Extract specific infos to the users
             var evalfunctions = ["diagram","element","package","structured"]
             return function(input){
                 return Object.keys(input).filter(function(property) {
@@ -42,7 +42,7 @@
     </script>
 
 </head>
-<body ng-app="app" ng-controller="controller">
+<body ng-app="ngDocEdit" ng-controller="controller">
     <div id="page">
 	<header>
 		<h1 ng-model="data.title" contenteditable="true"></h1>
@@ -80,11 +80,11 @@
                 </tr>
                 <tr ng-if="rule.config">
                     <th>Configuration</th>
-                    <td><input type="text" codestring ng-model="rule.config"/></td>
+                    <td><input type="text" json ng-model="rule.config"/></td>
                 </tr>
                 <tr>
                     <th>Required By</th>
-                    <td><input type="text" codestring ng-model="rule.requiredBy"/></td>
+                    <td><input type="text" json ng-model="rule.requiredBy"/></td>
                 </tr>
                 <tr ng-if="data.rules | requirements : rule">
                     <th>Requires</th>
@@ -107,8 +107,8 @@
         </div> <!-- rule in rules -->
         <button ng-click="data.rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
-        <!-- <button blob_data="data | serialize | unindent : 2", filename="validationRules.js.txt"></button> -->
-        Can be <a ng-href="{{bloburl}}" download="validationRules.js.txt" ng-click="updataBloburl(data | serialize | unindent : 2)">downloaded</a> or copied if you doubleclick it.
+        <p>Can be downloaded or copied if you doubleclick the code.</p>
+        <button blobdata="data | serialize | unindent : 2", filename="validationRules.js.txt">Download everything</button>
         <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
     </div>
     </div>

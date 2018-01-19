@@ -1,4 +1,3 @@
-'use strict'
 // Syntax Highlighting if available
 if ((typeof(hljs) != "undefined")) hljs.initHighlightingOnLoad();
 
@@ -25,9 +24,10 @@ function serialize(obj) {
     switch (obj.constructor) {
         case Function:
             var funstring = obj.toString();
-            if (funstring.indexOf('\n') > -1)
-                while(funstring.split('\n')[1].indexOf(TAB + TAB)==0)
-            funstring = funstring.replace(LINEBREAK_TAB, '\n');
+            if (funstring.indexOf('\n') > -1) {
+                while(funstring.split('\n')[1].indexOf(TAB + TAB) == 0)
+                    funstring = funstring.replace(LINEBREAK_TAB, '\n');
+            }
             return funstring;
         case Array:
             return '[' + obj.map(
@@ -37,11 +37,11 @@ function serialize(obj) {
             var result = [];
             angular.forEach(obj, function(value, key)  {
                 if (key.indexOf('$$') == -1) {
-                   if (!key.match(/[a-z_A-Z]*/)) key = angular.toJson(key);
-                   result.push(key + ': ' + serialize(value) );
-    					// note that upper key is a javscript key not a valid json one
-                    }
-                })
+                    if (!key.match(/[a-z_A-Z]*/)) key = angular.toJson(key);
+                    // note that upper key is a javscript key not a valid json one
+                    result.push(key + ': ' + serialize(value) );
+                }
+            })
             return '{' + indent('\n' + result.join(',\n')) + '\n}';
         default:
             return angular.toJson(obj);
@@ -51,16 +51,15 @@ function serialize(obj) {
 /* Angular Template Engine
 /*============================================================================*/
 // Define model
-var templateEngine = angular.module("app", [])
+var ngDocEdit = angular.module("ngDocEdit", [])
 
-// Allow raw html
+// Allow raw html everywhere, without explicitly trusting
 .config(function($sceProvider) {$sceProvider.enabled(false)})
 
-// Allow download from blob
-.config(['$compileProvider', function ($compileProvider) {
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
-}])
-
+// // Allow download from blob (if upper is disabled)
+// .config(['$compileProvider', function ($compileProvider) {
+//     $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
+// }])
 
 // Output Filters
 .filter('string', function() {
@@ -80,13 +79,12 @@ var templateEngine = angular.module("app", [])
 }})
 
 
-// 2-Way code-string conversion
-.directive('codestring', function() { return {
+.directive('json', function() { return {
     restrict: 'A', require: 'ngModel',
     link: function(scope, element, attr, ngModel) {
         ngModel.$parsers.push( angular.fromJson );
         ngModel.$formatters.push( angular.toJson);
-    } }; })
+} }; })
 .directive('tocSupervised', ['$timeout', function(timeout){
     return {
         restrict: 'C',
@@ -122,16 +120,17 @@ var templateEngine = angular.module("app", [])
             element.bind("blur keyup change", function() {
                 scope.$apply(read)
 }) } } })
-.directive("blobButton", function() {
+.directive("blobdata", function() {
     return {
         restrict: "A",
+        scope: { blobdata: '=' },
         link: function(scope, element, attrs) {
             element.bind('click', function() {
-                var data = "jsonData = " + attrs.data
+                var data = "jsonData = " + scope.blobdata
                 data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n') // Windows
                 var blob = new Blob([data], { type: 'text/plain' })
                 if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
-                    window.navigator.msSaveOrOpenBlob(blob, "jsonData.js");
+                    window.navigator.msSaveOrOpenBlob(blob, attrs.filename);
                 } else {
                     var bloburl = URL.createObjectURL(blob)
                     var a = document.createElement("a");
@@ -145,35 +144,16 @@ var templateEngine = angular.module("app", [])
         }
     }
 })
-.directive('hx', function() { // Variable level Heading with EA-GUID Support
+.directive('hx', function() { // Variable level Heading with ID Support
   return {
     restrict: 'E',  transclude: true,
     link: function(scope, element, attrs, ctrl, transclude) {
       transclude(scope, function (clone) {
-        var guid = attrs.guid ? ' id=' + attrs.guid.replace(/[\{\}]/g, '"') : ''
-        var header = angular.element('<h' + attrs.level + guid + '></h' + attrs.level + '>');
+        var id = attrs.id ? (' id=' + attrs.id) : ''
+        var header = angular.element('<h' + attrs.level + id + '></h' + attrs.level + '>');
         header.append(clone);
         element.replaceWith(header); // variant replace=true
       });
     }
   }
-})
-
-// Provides variables to the code
-.controller("controller", function ($scope, $window, $filter) {
-
-    $scope.data = jsonData // load data
-
-    // Download object JSON formatted
-    $scope.updateBloburl = function(data) {
-        console.log((data.match(/\n/g) || []).length)
-        var data = "jsonData = " + data
-        data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n') // Windows
-        var blob = new Blob([data], { type: 'text/plain' })
-        $scope.bloburl = URL.createObjectURL(blob)
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
-            window.navigator.msSaveOrOpenBlob(blob, "jsonData.js")
-            return false
-        } else return true  // For any other Browser
-    }
 })
