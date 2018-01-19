@@ -108,7 +108,7 @@
         <button ng-click="data.rules.push({})"> Add one</button>
         <h1>Whole Sourcecode</h1>
         <p>Can be downloaded or copied if you doubleclick the code.</p>
-        <button blobdata="data | serialize | unindent : 2", filename="validationRules.js.txt">Download everything</button>
+        <button blobdata="'jsonData = ' + (data | serialize | unindent : 2)" ctrl-s filename="validationRules.js.txt">Download everything</button>
         <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
     </div>
     </div>

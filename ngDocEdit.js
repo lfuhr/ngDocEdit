@@ -1,14 +1,6 @@
 // Syntax Highlighting if available
 if ((typeof(hljs) != "undefined")) hljs.initHighlightingOnLoad();
 
-angular.element(document).on('dblclick', 'code', function() {
-    var range = document.createRange();
-    range.selectNodeContents(this);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-})
-
 
 /* JSON-like formatting function that can serialize functions
 /*============================================================================*/
@@ -48,6 +40,22 @@ function serialize(obj) {
     }
 }
 
+function downloadBlob(data, filename) {
+    data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n') // Windows
+    var blob = new Blob([data], { type: 'text/plain' })
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+        var bloburl = URL.createObjectURL(blob)
+        var a = document.createElement("a");
+        a.href = bloburl;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(bloburl);
+    }
+    return false
+}
+
 /* Angular Template Engine
 /*============================================================================*/
 // Define model
@@ -84,6 +92,17 @@ var ngDocEdit = angular.module("ngDocEdit", [])
     link: function(scope, element, attr, ngModel) {
         ngModel.$parsers.push( angular.fromJson );
         ngModel.$formatters.push( angular.toJson);
+} }; })
+.directive('code', function() { return {
+    restrict: 'E',
+    link: function(scope, element, attr, ngModel) {
+        element.on('dblclick', function() {
+            var range = document.createRange();
+            range.selectNodeContents(this);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        })
 } }; })
 .directive('tocSupervised', ['$timeout', function(timeout){
     return {
@@ -125,22 +144,19 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         restrict: "A",
         scope: { blobdata: '=' },
         link: function(scope, element, attrs) {
-            element.bind('click', function() {
-                var data = "jsonData = " + scope.blobdata
-                data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n') // Windows
-                var blob = new Blob([data], { type: 'text/plain' })
-                if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
-                    window.navigator.msSaveOrOpenBlob(blob, attrs.filename);
-                } else {
-                    var bloburl = URL.createObjectURL(blob)
-                    var a = document.createElement("a");
-                    a.href = bloburl;
-                    a.download = attrs.filename;
-                    a.click();
-                    URL.revokeObjectURL(bloburl);
-                }
-                return false
-            })
+            var dl = function() {downloadBlob(scope.blobdata, attrs.filename)};
+            if (element.get(0).tagName == 'BUTTON')
+                element.bind('click', dl);
+            console.log(attrs)
+            if ('ctrlS' in attrs || element.get(0).tagName == 'CTRL-S') {
+                angular.element(document).bind('keydown', function(event) {
+                    if(event.ctrlKey && (event.which == 83)) {
+                        event.preventDefault();
+                        dl();
+                        return false;
+                    }
+                });
+            }
         }
     }
 })
