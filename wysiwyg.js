@@ -36,9 +36,11 @@ var editControls = '<div id="editControls">\
  <a data-role="removeFormat"><i class="fa fa-eraser"></i></a>\
  <a data-role="convertToPlainText"><i class="fa fa-file-text"></i></a>\
  <a data-role="editHtml"><i class="fa fa-code"></i></a>\
+ &nbsp;\
+<span iehint>IE only partially supported</span>\
 </div>';
 
-var buttonStyles = '<style>\
+var controlStyles = '<style>\
 #editControls {\
     position:fixed;\
     background: #555;\
@@ -52,12 +54,14 @@ var buttonStyles = '<style>\
     text-decoration: none;\
     color: white;\
 }\
+span[iehint] { display: none; color: pink; }\
 </style>';
 
 $(function () { // onload
 
     $('body').prepend($.parseHTML(editControls));
-    $('head').append($.parseHTML(buttonStyles));
+    $('head').append($.parseHTML(controlStyles));
+    if (isIE()) $('[iehint]').show();
 
     $('#editControls a').each(function () {
         var e = $(this);
@@ -69,7 +73,7 @@ $(function () { // onload
             document.execCommand('formatBlock', false, $(this).data('role'));
             break;
         case 'insertImage':
-            var imgurl = window.prompt("Please enter an image URL", "tree.jpg");
+            var imgurl = window.prompt("Please enter an image URL (alternatively paste directly in the text to embed into html)", "tree.jpg");
             if (imgurl) document.execCommand('insertImage', false, imgurl);
             break;
         case 'createLink':
@@ -103,9 +107,37 @@ $(function () { // onload
 
 }); // End onload
 
+
+// Paste image in Chrome (Firefox works out of the Box)
+$(document).on('paste', '.wysiwyg', function(){
+    var clipboardItem = event.clipboardData.items[0]
+    if (clipboardItem && clipboardItem.kind == 'file') {
+		var reader = new FileReader();
+		reader.readAsDataURL(clipboardItem.getAsFile());
+		reader.onload = function (clipboardItem) {
+			document.execCommand('insertImage', false, reader.result);
+		};
+    }
+})
+
+
 // Simplified verion of http://jsfiddle.net/Y4BBq/
 function getHTMLOfSelection() {
     var div = document.createElement('div');
     div.appendChild(window.getSelection().getRangeAt(0).cloneContents());
     return div.innerHTML;
 }
+
+function isIE() { return window.navigator.userAgent.indexOf('Trident') > -1 ||
+    window.navigator.userAgent.indexOf('MSIE') > -1 }
+
+
+// function insertHTML_IE(html) {
+// 	var range = window.getSelection().getRangeAt(0)
+// 	range.deleteContents();
+// 	var el = document.createElement("div");
+// 	el.innerHTML = html;
+// 	var frag = document.createDocumentFragment()
+// 	frag.appendChild(el.firstChild)
+// 	range.insertNode(frag)
+// }

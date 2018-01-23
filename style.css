@@ -74,13 +74,13 @@ input:hover, textarea:hover {
 /********** Input **********/
 code {
     tab-size: 2;
-    word-spacing: 0; /*reset*/
-} @media print { code {
+    word-spacing: 0;
+/*} @media print { code {*/
 	/* Prevent to cut off */
     white-space: pre-wrap;
-    word-break: keep-all;
+    word-break: break-all; /*even words*/
     max-height: none;
-}}
+}/*}*/
 
 .hljs {
 	background-color: transparent;

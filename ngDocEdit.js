@@ -28,7 +28,7 @@ function serialize(obj) {
         case Object:
             var result = [];
             angular.forEach(obj, function(value, key)  {
-                if (key.indexOf('$$') == -1) {
+                if (key.charAt(0) !== '$') {
                     if (!key.match(/[a-z_A-Z]*/)) key = angular.toJson(key);
                     // note that upper key is a javscript key not a valid json one
                     result.push(key + ': ' + serialize(value) );
@@ -43,7 +43,7 @@ function serialize(obj) {
 function downloadBlob(data, filename) {
     data = data.replace(/(?:\r\n|\r|\n)/g, '\r\n') // Windows
     var blob = new Blob([data], { type: 'text/plain' })
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) { // for IE
+    if (window.navigator.msSaveOrOpenBlob) { // for IE
         window.navigator.msSaveOrOpenBlob(blob, filename);
     } else {
         var bloburl = URL.createObjectURL(blob)
@@ -55,6 +55,9 @@ function downloadBlob(data, filename) {
     }
     return false
 }
+
+function isIE() { return window.navigator.userAgent.indexOf('Trident') > -1 ||
+	window.navigator.userAgent.indexOf('MSIE') > -1 }
 
 /* Angular Template Engine
 /*============================================================================*/
@@ -130,15 +133,26 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         restrict: "A",
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
+            if (element.is('td')) { // td not editable in IE+Edge
+            	var div = angular.element(document.createElement("div"))
+            	for (var attr in attrs.$attr) {
+	            	div.attr(attr, attrs[attr])
+	            	element.removeAttr(attr)
+	            }
+            	element.append(div)
+            	element = div
+            }
             function read() {
-                ngModel.$setViewValue(element.html())
+                ngModel.$setViewValue(element.html() || undefined)
             }
             ngModel.$render = function() {
-                element.html(ngModel.$viewValue || "")
+                element.html(ngModel.$viewValue)
             }
-            element.bind("blur keyup change", function() {
-                scope.$apply(read)
-}) } } })
+            element.bind("blur keyup", function() { scope.$apply(read) })
+            element.bind('keydown', function(event) {
+            	if(event.which == 27 /*ESC*/) { element.blur() }
+            })
+} } })
 .directive("blobdata", function() {
     return {
         restrict: "A",
@@ -160,15 +174,15 @@ var ngDocEdit = angular.module("ngDocEdit", [])
     }
 })
 .directive('hx', function() { // Variable level Heading with ID Support
-  return {
-    restrict: 'E',  transclude: true,
-    link: function(scope, element, attrs, ctrl, transclude) {
-      transclude(scope, function (clone) {
-        var id = attrs.id ? (' id=' + attrs.id) : ''
-        var header = angular.element('<h' + attrs.level + id + '></h' + attrs.level + '>');
-        header.append(clone);
-        element.replaceWith(header); // variant replace=true
-      });
-    }
-  }
+	return {
+		restrict: 'E',  transclude: true,
+		link: function(scope, element, attrs, ctrl, transclude) {
+			transclude(scope, function (clone) {
+				var header = angular.element('<h' + attrs.level + '></h' + attrs.level + '>');
+				for (var attr in attrs.$attr) if (attr != 'level') header.attr(attr, attrs[attr])
+				header.append(clone);
+        		element.replaceWith(header); // equivalent to replace=true
+    		});
+		}
+	}
 })
