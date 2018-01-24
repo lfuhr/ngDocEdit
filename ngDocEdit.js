@@ -134,7 +134,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         restrict: "A",
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
-            if (element.is('td')) { // td not editable in IE+Edge
+            if (element[0].tagName =='TD') { // td not editable in IE+Edge
             	var div = angular.element(document.createElement("div"))
             	for (var attr in attrs.$attr) {
 	            	div.attr(attr, attrs[attr])
@@ -160,9 +160,9 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         scope: { blobdata: '=' },
         link: function(scope, element, attrs) {
             var dl = function() {downloadBlob(scope.blobdata, attrs.filename)};
-            if (element.get(0).tagName == 'BUTTON')
+            if (element[0].tagName == 'BUTTON')
                 element.bind('click', dl);
-            if ('ctrlS' in attrs || element.get(0).tagName == 'CTRL-S') {
+            if ('ctrlS' in attrs || element[0].tagName == 'CTRL-S') {
                 angular.element(document).bind('keydown', function(event) {
                     if(event.ctrlKey && (event.which == 83)) {
                         event.preventDefault();
