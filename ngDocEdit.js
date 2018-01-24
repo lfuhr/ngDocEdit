@@ -149,8 +149,8 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue)
             }
-            element.bind("blur keyup", function() { scope.$apply(read) })
-            element.bind('keydown', function(event) {
+            element.on("blur keyup", function() { scope.$apply(read) })
+            element.on('keydown', function(event) {
             	if(event.which == 27 /*ESC*/) { element.blur() }
             })
 } } })
@@ -161,9 +161,9 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         link: function(scope, element, attrs) {
             var dl = function() {downloadBlob(scope.blobdata, attrs.filename)};
             if (element[0].tagName == 'BUTTON')
-                element.bind('click', dl);
+                element.on('click', dl);
             if ('ctrlS' in attrs || element[0].tagName == 'CTRL-S') {
-                angular.element(document).bind('keydown', function(event) {
+                angular.element(document).on('keydown', function(event) {
                     if(event.ctrlKey && (event.which == 83)) {
                         event.preventDefault();
                         dl();
