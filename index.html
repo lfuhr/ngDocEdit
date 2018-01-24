@@ -27,7 +27,7 @@
     <script type="text/javascript">
         // Two filters that really depend on the context
         ngDocEdit.filter('evalsOn', function() { // Extract specific infos to the users
-            var evalfunctions = ["diagram","element","package","structured"]
+            var evalfunctions = ["diagram","element","package","connector"]
             return function(input){
                 return Object.keys(input).filter(function(property) {
                     return evalfunctions.indexOf(property) > -1

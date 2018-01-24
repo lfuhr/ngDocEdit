@@ -66,11 +66,13 @@ var ngDocEdit = angular.module("ngDocEdit", [])
 
 // Allow raw html everywhere, without explicitly trusting
 .config(function($sceProvider) {$sceProvider.enabled(false)})
+//.filter('unsafe', function($sce) { return $sce.trustAsHtml }) // Alternative
 
 // // Allow download from blob (if upper is disabled)
 // .config(['$compileProvider', function ($compileProvider) {
 //     $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
 // }])
+
 
 // Output Filters
 .filter('string', function() {
@@ -79,7 +81,6 @@ var ngDocEdit = angular.module("ngDocEdit", [])
 .filter('highlight', function() {
   return function(input, lang) {return hljs.highlight('javascript', input).value; };
 })
-//.filter('unsafe', function($sce) { return $sce.trustAsHtml })
 .filter('serialize', function() { return serialize; })
 .filter('unindent', function() { return function(str, n) {
     for (var i = 0; i < (n || 1); i++) { str = str.replace(LINEBREAK_TAB, '\n'); }
@@ -96,7 +97,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         ngModel.$parsers.push( angular.fromJson );
         ngModel.$formatters.push( angular.toJson);
 } }; })
-.directive('code', function() { return {
+.directive('code', function() { return { // Doubleclick to select
     restrict: 'E',
     link: function(scope, element, attr, ngModel) {
         element.on('dblclick', function() {
@@ -173,7 +174,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         }
     }
 })
-.directive('hx', function() { // Variable level Heading with ID Support
+.directive('hx', function() { // Variable level Heading
 	return {
 		restrict: 'E',  transclude: true,
 		link: function(scope, element, attrs, ctrl, transclude) {
@@ -181,7 +182,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
 				var header = angular.element('<h' + attrs.level + '></h' + attrs.level + '>');
 				for (var attr in attrs.$attr) if (attr != 'level') header.attr(attr, attrs[attr])
 				header.append(clone);
-        		element.replaceWith(header); // equivalent to replace=true
+        		element.replaceWith(header); // replace=true
     		});
 		}
 	}
