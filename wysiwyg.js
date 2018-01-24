@@ -57,6 +57,23 @@ var controlStyles = '<style>\
 span[iehint] { display: none; color: pink; }\
 </style>';
 
+
+// $ = function(arg) {
+// 	if (typeof(arg) == 'string')
+// 		return angular.element(document).find(arg)
+// 	else
+// 		return angular.element(arg)
+// }
+// $.parseHTML = function(str) {
+//   var tmp = document.implementation.createHTMLDocument('argForIE');
+//   tmp.body.innerHTML = str;
+//   return tmp.body.children;
+// }
+// Element.prototype.is = Element.prototype.matches || Element.prototype.msMatchesSelector
+// Element.prototype.each = function(f){Array.prototype.forEach.call(this,f);
+// 									 return angular.element(this)}
+
+
 $(function () { // onload
 
     $('body').prepend($.parseHTML(editControls));
@@ -67,7 +84,7 @@ $(function () { // onload
         var e = $(this);
         e.attr('title', e.attr('data-role')).attr('href', 'javascript:void(0)');
     })
-    .click(function () {
+    $('#editControls a').on('click', function () {
         switch ($(this).data('role')) {
         case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': case 'p':
             document.execCommand('formatBlock', false, $(this).data('role'));
@@ -96,7 +113,8 @@ $(function () { // onload
 
     // Enable / Disable Controls and make links clickable
     $(document).on('focusout', '.wysiwyg', function () {
-        if (!$('#editControls').is(":hover")) {
+    	var ctrls = $('#editControls')
+        if (!ctrls.is(':hover')) {
             $('#editControls').hide();
             $(this).find('a').attr("contenteditable", "false").attr('target', '_blank');
         }
