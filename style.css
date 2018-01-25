@@ -65,7 +65,7 @@ input, textarea {
     color: inherit;
     background-color: inherit;
 }
-input:hover, textarea:hover {
+input:hover:not([disabled]), textarea:hover:not([disabled]) {
     background-color:whitesmoke;
 }*:invalid, .ng-invalid {
 	background-color: #f2c3c3;

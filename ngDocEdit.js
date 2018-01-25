@@ -2,6 +2,16 @@
 if ((typeof(hljs) != "undefined")) hljs.initHighlightingOnLoad();
 
 
+// function findGetParameter(parameterName) {
+//     var result = null
+//     location.search .substr(1) .split("&") .forEach(function (item) {
+//         if (item.split("=")[0] === parameterName) 
+//             result = decodeURIComponent(item.split("=")[1] || '');
+//     });
+//     return result;
+// }
+
+
 /* JSON-like formatting function that can serialize functions
 /*============================================================================*/
 var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g;
@@ -175,15 +185,29 @@ var ngDocEdit = angular.module("ngDocEdit", [])
     }
 })
 .directive('hx', function() { // Variable level Heading
-	return {
-		restrict: 'E',  transclude: true,
-		link: function(scope, element, attrs, ctrl, transclude) {
-			transclude(scope, function (clone) {
-				var header = angular.element('<h' + attrs.level + '></h' + attrs.level + '>');
-				for (var attr in attrs.$attr) if (attr != 'level') header.attr(attr, attrs[attr])
-				header.append(clone);
-        		element.replaceWith(header); // replace=true
-    		});
-		}
-	}
+    return {
+        restrict: 'E',  transclude: true,
+        link: function(scope, element, attrs, ctrl, transclude) {
+            transclude(scope, function (clone) {
+                var header = angular.element('<h' + attrs.level + '></h' + attrs.level + '>');
+                for (var attr in attrs.$attr) if (attr != 'level') header.attr(attr, attrs[attr])
+                header.append(clone);
+                element.replaceWith(header); // replace=true
+            });
+        }
+    }
 })
+.directive('readonly', ['$timeout', function(timeout) { // Variable level Heading        
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            if (location.search.substr(1).split("&").some(function(item){return item.split("=")[0] != 'e'})) {
+                scope.readonly = true
+                timeout(function() {
+                    element.find('[contenteditable]').removeAttr('contenteditable')
+                    element.find('input').attr('disabled', 'disabled')
+                })
+            }
+        }
+    }
+}])

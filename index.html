@@ -42,7 +42,7 @@
     </script>
 
 </head>
-<body ng-app="ngDocEdit" ng-controller="controller">
+<body ng-app="ngDocEdit" ng-controller="controller" readonly>
     <div id="page">
 	<header>
 		<h1 ng-model="data.title" contenteditable="true"></h1>
@@ -64,8 +64,8 @@
 
 
         <div ng-repeat="rule in data.rules"
-        onfocusin="this.getElementsByTagName('button')[0].style.display = 'block'"
-        onfocusout="var b=this.getElementsByTagName('button')[0]; if (!b.parentElement.querySelector('button:hover')) b.style.display = 'none'">
+        onfocusin="$(this).find('button').show()"
+        onfocusout="if (!$(this).is(':hover')) $(this).find('button').hide()">
 
             <button  style="float: right;display: none;" ng-click="data.rules.splice($index, 1)">Remove</button>
             <h2 ng-model="rule.title" contenteditable="true"></h2>
@@ -105,11 +105,13 @@
             </table>
 
         </div> <!-- rule in rules -->
-        <button ng-click="data.rules.push({})"> Add one</button>
-        <h1>Whole Sourcecode</h1>
-        <p>Can be downloaded or copied if you doubleclick the code.</p>
-        <button blobdata="'jsonData = ' + (data | serialize | unindent : 2)" ctrl-s filename="validationRules.js.txt">Download everything</button>
-        <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
+        <ng-if ng-if="!readonly">
+            <button ng-click="data.rules.push({})"> Add one</button>
+            <h1>Whole Sourcecode</h1>
+            <p>Can be downloaded or copied if you doubleclick the code.</p>
+            <button blobdata="'jsonData = ' + (data | serialize | unindent : 2)" ctrl-s filename="validationRules.js.txt">Download everything</button>
+            <pre id="completecode"><code ng-bind-html="data | serialize | unindent : 2 | highlight"></code></pre>
+        </ng-if>
     </div>
     </div>
 </body>
