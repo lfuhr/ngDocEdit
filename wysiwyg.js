@@ -67,7 +67,7 @@ $(function () { // onload
         var e = $(this);
         e.attr('title', e.attr('data-role')).attr('href', 'javascript:void(0)');
     })
-    .click(function () {
+    .on('click', function () {
         switch ($(this).data('role')) {
         case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': case 'p':
             document.execCommand('formatBlock', false, $(this).data('role'));

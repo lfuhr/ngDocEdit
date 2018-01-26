@@ -63,11 +63,12 @@ input, textarea {
     border: none;
     font-size: inherit;
     color: inherit;
-    background-color: inherit;
+    background-color: transparent;
 }
-input:hover:not([disabled]), textarea:hover:not([disabled]) {
+input:hover:not([disabled]), textarea:hover:not([disabled])) {
     background-color:whitesmoke;
-}*:invalid, .ng-invalid {
+}
+input:invalid, .ng-invalid {
 	background-color: #f2c3c3;
 }
 
