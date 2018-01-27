@@ -161,7 +161,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
                 element.on('click', dl);
             if ('ctrlS' in attrs || element[0].tagName == 'CTRL-S') {
                 $(document).on('keydown', function(event) {
-                    if(event.ctrlKey && (event.which == 83)) {
+                    if((event.ctrlKey || event.metaKey) && (event.which == 83)) {
                         event.preventDefault();
                         dl();
                         return false;
