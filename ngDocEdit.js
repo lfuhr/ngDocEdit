@@ -15,7 +15,6 @@ if(typeof($) === 'undefined') {
     }
 }
 
-var updateHeadlinesGlobal
 $(function () { // onload
     var editControls = getEditControlsCode()
     $('body').prepend($.parseHTML(editControls.html));
@@ -50,7 +49,6 @@ $(function () { // onload
             break;
         // See https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand for more options
         }
-        // updateHeadlinesGlobal()
     });
 })
 
@@ -124,7 +122,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             scope.$on('$destroy', function () {scope.headlines=[]}); // avoid memoryleaks from dom references
             scope.scrollTo = function (headline) { headline.element.scrollIntoView(); };
             element.on('input', updateHeadlines)
-            updateHeadlinesGlobal = updateHeadlines
+            observeDOM(element[0],updateHeadlines)
             timeout(updateHeadlines);
         }
     };
@@ -150,6 +148,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
                 element.html(ngModel.$viewValue)
             }
             element.on("input", function() { scope.$apply(read) })
+            observeDOM(element[0],function() { scope.$apply(read) })
             element.on('keydown', function(event) {
             	if(event.which == 27 /*ESC*/) { element.blur() }
             })
@@ -247,6 +246,13 @@ function getHTMLOfSelection() {
     return div.innerHTML;
 }
 
+function observeDOM(obj, callback){
+        new window.MutationObserver(function(mutations){
+            if( mutations[0].addedNodes.length || mutations[0].removedNodes.length ) {
+                callback()
+            }
+        }).observe( obj, { childList:true, subtree:true });
+};
 
 
 /* JSON-like formatting function that can serialize functions */
