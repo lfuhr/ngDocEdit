@@ -15,7 +15,7 @@ if(typeof($) === 'undefined') {
     }
 }
 
-// Edit Controls
+var updateHeadlinesGlobal
 $(function () { // onload
     var editControls = getEditControlsCode()
     $('body').prepend($.parseHTML(editControls.html));
@@ -28,7 +28,7 @@ $(function () { // onload
     .on('click', function () {
         switch (this.dataset.role) {
         case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': case 'p':
-            document.execCommand('formatBlock', false, $(this).data('role'));
+            document.execCommand('formatBlock', false, this.dataset.role);
             break;
         case 'insertImage':
             var imgurl = window.prompt("Please enter an image URL (alternatively paste directly in the text to embed into html)", "tree.jpg");
@@ -50,6 +50,7 @@ $(function () { // onload
             break;
         // See https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand for more options
         }
+        // updateHeadlinesGlobal()
     });
 })
 
@@ -118,10 +119,12 @@ var ngDocEdit = angular.module("ngDocEdit", [])
                         element: e
                     })
                 })
+                scope.$apply()
             }
             scope.$on('$destroy', function () {scope.headlines=[]}); // avoid memoryleaks from dom references
             scope.scrollTo = function (headline) { headline.element.scrollIntoView(); };
-            scope.$watch('data', updateHeadlines, true);
+            element.on('input', updateHeadlines)
+            updateHeadlinesGlobal = updateHeadlines
             timeout(updateHeadlines);
         }
     };
@@ -146,7 +149,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue)
             }
-            element.on("blur keyup", function() { scope.$apply(read) })
+            element.on("input", function() { scope.$apply(read) })
             element.on('keydown', function(event) {
             	if(event.which == 27 /*ESC*/) { element.blur() }
             })
@@ -184,7 +187,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         }
     }
 })
-.directive('readonly', ['$timeout', function(timeout) { // Variable level Heading        
+.directive('readonly', ['$timeout', function(timeout) { // Variable level Heading
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
@@ -209,7 +212,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
                     element.find('a').attr("contenteditable", "false").attr('target', '_blank');
                 }
             }).on('focusin', function () {
-                $('#editControls').css('display', 'inline');
+                $('#editControls').css('display', 'inline')
                 element.find('a').removeAttr("contenteditable");
             });
 
