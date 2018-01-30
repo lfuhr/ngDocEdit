@@ -142,7 +142,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             	element = div
             }
         	// if(scope.readonly) { element.attr('contenteditable', false) }
-    		scope.$watch('readonly', function(){console.log('watch');element.attr('contenteditable', !scope.readonly)})
+    		scope.$watch('readonly', function(){element.attr('contenteditable', !scope.readonly)})
             function read() {
                 ngModel.$setViewValue(element.html() || undefined)
             }
