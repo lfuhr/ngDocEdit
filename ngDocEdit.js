@@ -121,7 +121,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             }
             scope.$on('$destroy', function () {scope.headlines=[]}); // avoid memoryleaks from dom references
             scope.scrollTo = function (headline) { headline.element.scrollIntoView(); };
-            element.on('input', updateHeadlines)
+            element.on('input blur', updateHeadlines)
             observeDOM(element[0],updateHeadlines)
             timeout(updateHeadlines);
         }
@@ -141,16 +141,18 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             	element.append(div)
             	element = div
             }
+        	// if(scope.readonly) { element.attr('contenteditable', false) }
+    		scope.$watch('readonly', function(){console.log('watch');element.attr('contenteditable', !scope.readonly)})
             function read() {
                 ngModel.$setViewValue(element.html() || undefined)
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue)
             }
-            element.on("input", function() { scope.$apply(read) })
+            element.on("input blur", function() { scope.$apply(read) })
             observeDOM(element[0],function() { scope.$apply(read) })
             element.on('keydown', function(event) {
-            	if(event.which == 27 /*ESC*/) { element.blur() }
+            	if(event.which == 27 /*ESC*/) { element[0].blur() }
             })
 } } })
 .directive("blobdata", function() {
@@ -186,17 +188,21 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         }
     }
 })
-.directive('readonly', ['$timeout', function(timeout) { // Variable level Heading
+.directive('readonly', function() { // Set Readonly if no parameter e is in URL
     return {
         restrict: 'A',
+        link: function(scope) {
+        	setReadonly = function(arg) {scope.readonly = arg; scope.$apply()}
+            scope.readonly = !location.search.substr(1).split("&").some(function(item){return item && item.split("=")[0] == 'e'})
+        }
+    }
+})
+.directive('input', ['$timeout', function(timeout) { // Variable level Heading
+    return {
+        restrict: 'E',
         link: function(scope, element, attrs) {
-            if (location.search.substr(1).split("&").some(function(item){return item.split("=")[0] != 'e'})) {
-                scope.readonly = true
-                timeout(function() {
-                    element.find('[contenteditable]').removeAttr('contenteditable')
-                    element.find('input').attr('disabled', 'disabled')
-                })
-            }
+            // if (scope.readonly) element.attr('disabled', 'disabled')
+            scope.$watch('readonly', function(){scope.readonly ? element.attr('disabled', 'disabled') : element.removeAttr('disabled')})
         }
     }
 }])
