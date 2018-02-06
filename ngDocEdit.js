@@ -16,25 +16,9 @@ if(typeof($) === 'undefined') {
     }
 }
 
- // Controlle only for embedded documents
-var originalHTML
-function initEmbedded() {
-    // Save original document for embedded documents
-    originalHTML = document.documentElement.outerHTML
 
-    var rex = /<script data-scope="(.+?)">[\S\s]+?<\/script>/g
-    var embedded = $('[data-scope]')
-    if (embedded.length) {
-        ngDocEdit.controller("controller", function ($scope) {
-            angular.forEach(embedded, function(e){
-                $scope[e.dataset.scope] = JSON.parse(e.innerHTML);
-            })
-        })
-    }
-}
-
-
-$(function () { // onload
+// WYSIWYG controls
+$(function () {
     var editControls = getEditControlsCode()
     $('body').prepend($.parseHTML(editControls.html));
     $('head').append($.parseHTML(editControls.css));
@@ -70,8 +54,6 @@ $(function () { // onload
         }
     });
 })
-
-
 
 
 /* Angular Template Engine
@@ -182,7 +164,8 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         link: function(scope, element, attrs) {
             var dl = function() {
                 var blobdata = ('embedded' in attrs)
-                    ? originalHTML.replace(/<script data-scope="(.+?)">[\S\s]+?<\/script>/g, function(str, varname) {
+                    ? '<!DOCTYPE html>' +
+                      originalHTML.replace(/<script data-scope="(.+?)">[\S\s]+?<\/script>/g, function(str, varname) {
                         var content = (blobdata && varname in blobdata)
                             ? blobdata[varname]
                             : JSON.stringify(element.scope()[varname])
@@ -273,6 +256,32 @@ var ngDocEdit = angular.module("ngDocEdit", [])
 
 
 
+ // Angular controller only for embedded documents
+var originalHTML = null;
+
+// Save original document for embedded documents before angular is launched
+window.document.removeEventListener = (function(originalRemove, init) {
+    return function(event, listener){
+        init()
+        originalRemove(event, listener)
+        window.document.removeEventListener = originalRemove
+    }
+})(window.document.removeEventListener, function init() {
+    originalHTML = document.documentElement.outerHTML
+    var rex = /<script data-scope="(.+?)">[\S\s]+?<\/script>/g
+    var embedded = $('[data-scope]')
+    if (embedded.length) {
+        ngDocEdit.controller("controller", function ($scope) {
+            angular.forEach(embedded, function(e){
+                $scope[e.dataset.scope] = JSON.parse(e.innerHTML);
+            })
+        })
+    }
+})
+
+
+
+
 /* ========================================================== */
 /* =============== Functions ================================ */
 
@@ -295,10 +304,8 @@ function observeDOM(obj, callback){
 
 
 /* JSON-like formatting function that can serialize functions */
-var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g;
-
 function serialize(obj) {
-
+    var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g;
     function indent(str) { return str.replace(/(?:\r\n|\r|\n)/g, '\n' + TAB); }
 
     if (obj === undefined) return 'undefined';
