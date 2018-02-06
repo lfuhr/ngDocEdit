@@ -3,6 +3,7 @@
 
 if (!Element.prototype.matches) {  Element.prototype.matches = Element.prototype.msMatchesSelector; } // IE fix
 
+// Pseudo JQuery
 if(typeof($) === 'undefined') {
     var $ = function(arg) {
         if (typeof(arg) == 'string') return angular.element(document.querySelectorAll(arg))
@@ -14,6 +15,24 @@ if(typeof($) === 'undefined') {
       return tmp.body.children;
     }
 }
+
+ // Controlle only for embedded documents
+var originalHTML
+function initEmbedded() {
+    // Save original document for embedded documents
+    originalHTML = document.documentElement.outerHTML
+
+    var rex = /<script data-scope="(.+?)">[\S\s]+?<\/script>/g
+    var embedded = $('[data-scope]')
+    if (embedded.length) {
+        ngDocEdit.controller("controller", function ($scope) {
+            angular.forEach(embedded, function(e){
+                $scope[e.dataset.scope] = JSON.parse(e.innerHTML);
+            })
+        })
+    }
+}
+
 
 $(function () { // onload
     var editControls = getEditControlsCode()
@@ -59,6 +78,7 @@ $(function () { // onload
 /*============================================================================*/
 // Define model
 var ngDocEdit = angular.module("ngDocEdit", [])
+// to access scope from console type $('body').scope().content
 
 // Allow raw html everywhere, without explicitly trusting
 .config(function($sceProvider) {$sceProvider.enabled(false)})
@@ -160,7 +180,21 @@ var ngDocEdit = angular.module("ngDocEdit", [])
         restrict: "A",
         scope: { blobdata: '=' },
         link: function(scope, element, attrs) {
-            var dl = function() {downloadBlob(scope.blobdata, attrs.filename)};
+            var dl = function() {
+                var blobdata = ('embedded' in attrs)
+                    ? originalHTML.replace(/<script data-scope="(.+?)">[\S\s]+?<\/script>/g, function(str, varname) {
+                        var content = (blobdata && varname in blobdata)
+                            ? blobdata[varname]
+                            : JSON.stringify(element.scope()[varname])
+                        return '<script data-scope="'+varname+'">'+content+'</script>'
+                      })
+                      .replace(/<style.+?<\/style>/,'')
+                    : scope.blobdata
+                var filename = attrs.filename || window.location.pathname.split("/").pop()
+                    .replace(/\.html?$/,function(){return 'embedded' in attrs ? '.html' : '.js'})
+
+                downloadBlob(blobdata, filename )
+            };
             if (element[0].tagName == 'BUTTON')
                 element.on('click', dl);
             if ('ctrlS' in attrs || element[0].tagName == 'CTRL-S') {
@@ -235,8 +269,7 @@ var ngDocEdit = angular.module("ngDocEdit", [])
             })
         }
     }
-})
-
+});
 
 
 
