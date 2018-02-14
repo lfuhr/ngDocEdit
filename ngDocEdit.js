@@ -40,9 +40,17 @@ $(function () {
             var linkurl = window.prompt("Please enter a link URL", "http://example.com");
             if (linkurl) document.execCommand('createLink', false, linkurl);
             break;
-        case 'editHtml':
+        case 'insertHTML':
             var code = window.prompt("Change plain HTML, use carefully!", getHTMLOfSelection());
             if (code) document.execCommand('insertHTML', false, code);
+            break;
+        case 'foreColor':
+            var foreColor = window.prompt("Enter Color like green or #0a0", "red");
+            if (foreColor) document.execCommand('foreColor', false, foreColor);
+            break;
+        case 'hiliteColor':
+            var hiliteColor = window.prompt("Enter Color like green or #0a0", "yellow");
+            if (hiliteColor) document.execCommand('hiliteColor', false, hiliteColor);
             break;
         case 'convertToPlainText':
             document.execCommand('insertHTML', false, window.getSelection());
@@ -380,28 +388,30 @@ function isIE() { return window.navigator.userAgent.indexOf('Trident') > -1 ||
 
 function getEditControlsCode() {return {
 html: '<div id="editControls">\
- <a data-role="undo"><i class="fa fa-undo"></i></a>\
- <a data-role="redo"><i class="fa fa-repeat"></i></a>\
+ <a data-role="undo"><i class="fas fa-undo"></i></a>\
+ <a data-role="redo"><i class="fas fa-redo"></i></a>\
  &nbsp;\
- <a data-role="bold"><i class="fa fa-bold"></i></a>\
- <a data-role="italic"><i class="fa fa-italic"></i></a>\
- <a data-role="underline"><i class="fa fa-underline"></i></a>\
- <a data-role="strikeThrough"><i class="fa fa-strikethrough"></i></a>\
+ <a data-role="bold"><i class="fas fa-bold"></i></a>\
+ <a data-role="italic"><i class="fas fa-italic"></i></a>\
+ <a data-role="underline"><i class="fas fa-underline"></i></a>\
+ <a data-role="strikeThrough"><i class="fas fa-strikethrough"></i></a>\
+ <a data-role="foreColor"><i class="fas fa-eye-dropper"></i></a>\
+ <a data-role="hiliteColor"><i class="fas fa-eye-dropper inverse"></i></a>\
  &nbsp;\
- <a data-role="justifyLeft"><i class="fa fa-align-left"></i></a>\
- <a data-role="justifyCenter"><i class="fa fa-align-center"></i></a>\
- <a data-role="justifyRight"><i class="fa fa-align-right"></i></a>\
- <a data-role="justifyFull"><i class="fa fa-align-justify"></i></a>\
+ <a data-role="justifyLeft"><i class="fas fa-align-left"></i></a>\
+ <a data-role="justifyCenter"><i class="fas fa-align-center"></i></a>\
+ <a data-role="justifyRight"><i class="fas fa-align-right"></i></a>\
+ <a data-role="justifyFull"><i class="fas fa-align-justify"></i></a>\
  &nbsp;\
- <a data-role="indent"><i class="fa fa-indent"></i></a>\
- <a data-role="outdent"><i class="fa fa-outdent"></i></a>\
+ <a data-role="indent"><i class="fas fa-indent"></i></a>\
+ <a data-role="outdent"><i class="fas fa-outdent"></i></a>\
  &nbsp;\
- <a data-role="insertUnorderedList"><i class="fa fa-list-ul"></i></a>\
- <a data-role="insertOrderedList"><i class="fa fa-list-ol"></i></a>\
+ <a data-role="insertUnorderedList"><i class="fas fa-list-ul"></i></a>\
+ <a data-role="insertOrderedList"><i class="fas fa-list-ol"></i></a>\
  &nbsp;\
- <a data-role="insertImage"><i class="fa fa-picture-o"></i></a>\
- <a data-role="createLink"><i class="fa fa-link"></i></a>\
- <a data-role="unlink"><i class="fa fa-unlink"></i></a>\
+ <a data-role="insertImage"><i class="fas fa-image"></i></a>\
+ <a data-role="createLink"><i class="fas fa-link"></i></a>\
+ <a data-role="unlink"><i class="fas fa-unlink"></i></a>\
  &nbsp;\
  <a data-role="h1">H1</a>\
  <a data-role="h2">H2</a>\
@@ -411,12 +421,12 @@ html: '<div id="editControls">\
  <a data-role="h6">H6</a>\
  <a data-role="p">p</a>\
  &nbsp;\
- <a data-role="subscript"><i class="fa fa-subscript"></i></a>\
- <a data-role="superscript"><i class="fa fa-superscript"></i></a>\
+ <a data-role="subscript"><i class="fas fa-subscript"></i></a>\
+ <a data-role="superscript"><i class="fas fa-superscript"></i></a>\
  &nbsp;\
- <a data-role="removeFormat"><i class="fa fa-eraser"></i></a>\
- <a data-role="convertToPlainText"><i class="fa fa-file-text"></i></a>\
- <a data-role="editHtml"><i class="fa fa-code"></i></a>\
+ <a data-role="removeFormat"><i class="fas fa-eraser"></i></a>\
+ <a data-role="convertToPlainText"><i class="fas fa-file-alt"></i></a>\
+ <a data-role="insertHTML"><i class="fas fa-code"></i></a>\
  &nbsp;\
 <span iehint>IE only partially supported</span>\
 </div>',
@@ -433,6 +443,10 @@ css: '<style>\
     padding: 3px;\
     text-decoration: none;\
     color: white;\
+}\
+#editControls a .inverse {\
+    color: #555;\
+    background: white;\
 }\
 span[iehint] { display: none; color: pink; }\
 </style>'};
