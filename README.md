@@ -14,7 +14,7 @@ be used in other projects with small modifications. It is written in jQuery styl
 ## Features (and reusable snippets)
 * JSON.stringify variant, that serializes functions
 * partial JQuery replacement (using angular and document.querySelectorAll)
-* toggle readonly on inputs and contenteditables
+* toggle readonly using bookmarklet javascript:setReadonly(false)
 * make contenteditable working with Angular.js
 * variable level heading tag `<hx></hx>`
 * base64 Image pasting (for Chrome)
