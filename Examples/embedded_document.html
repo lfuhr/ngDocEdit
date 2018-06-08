@@ -6,15 +6,15 @@
 
 	<!-- Template Engine (requires data and uses syntax highlighting) -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-	<script src="ngDocEdit.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/lfuhr/ngDocEdit@0.2/ngDocEdit.js"></script>
 	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
 	<!-- Style -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/lfuhr/ngDocEdit@0.1/style.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/lfuhr/ngDocEdit@0.2/style.css">
 </head>
 <body ng-app="ngDocEdit" ng-controller="controller">
 	<div id="toc">
-		<h2>Contents</h2>
+		<h2>Table of Contents</h2>
 		<ul> <li ng-repeat="headline in headlines" ng-class="'toc'+headline.level" ng-click="scrollTo(headline)">
 		{{headline.label}}</li> </ul>
 	</div>

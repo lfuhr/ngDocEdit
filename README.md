@@ -27,6 +27,6 @@ be used in other projects with small modifications. It is written in jQuery styl
 * Although using modern browser features, partly working for IE
 
 ## Examples
-* ([Data and Template in one file](https://lfuhr.github.io/ngDocEdit/Examples/embedded_document.html) Saving the document, a new HTML document is created containing the structured content in JSON.
-* ([Very simple WYSIWYG example](https://lfuhr.github.io/ngDocEdit/Examples/simple_document.html)
-* ([Complex example](https://lfuhr.github.io/ngDocEdit/Examples/validation-rules.html) Code generation using HTML forms, beautiful formatting and Buttons
+* [Data and Template in one file](https://lfuhr.github.io/ngDocEdit/Examples/embedded_document.html) Saving the document, a new HTML document is created containing the structured content in JSON.
+* [Very simple WYSIWYG example](https://lfuhr.github.io/ngDocEdit/Examples/simple_document.html)
+* [Complex example](https://lfuhr.github.io/ngDocEdit/Examples/validation-rules.html) Code generation using HTML forms, beautiful formatting and Buttons

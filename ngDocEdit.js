@@ -183,7 +183,6 @@ var ngDocEdit = angular.module("ngDocEdit", [])
                     : scope.blobdata
                 var filename = attrs.filename || window.location.pathname.split("/").pop()
                     .replace(/\.html?$/,function(){return 'embedded' in attrs ? '.html' : '.js'})
-
                 downloadBlob(blobdata, filename )
             };
             if (element[0].tagName == 'BUTTON')
@@ -356,7 +355,9 @@ function downloadBlob(data, filename) {
         var a = document.createElement("a");
         a.href = bloburl;
         a.download = filename;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(bloburl);
     }
     return false
