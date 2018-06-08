@@ -89,11 +89,11 @@ var ngDocEdit = angular.module("ngDocEdit", [])
 })
 .filter('serialize', function() { return serialize; })
 .filter('unindent', function() { return function(str, n) {
-    for (var i = 0; i < (n || 1); i++) { str = str.replace(LINEBREAK_TAB, '\n'); }
+    for (var i = 0; i < (n || 1); i++) { str = str.replace(/(?:\r\n\t|\r\t|\n\t)/g, '\n'); }
     return str;
 }})
 .filter('strip_wrapping', function() { return function(json) {
-    return json.replace(LINEBREAK_TAB, '\n').split('\n').slice(1, -1).join('\n');
+    return json.replace(/(?:\r\n\t|\r\t|\n\t)/g, '\n').split('\n').slice(1, -1).join('\n');
 }})
 
 
@@ -312,8 +312,7 @@ function observeDOM(obj, callback){
 
 /* JSON-like formatting function that can serialize functions */
 function serialize(obj) {
-    var TAB = '\t'; var LINEBREAK_TAB = /(?:\r\n\t|\r\t|\n\t)/g;
-    function indent(str) { return str.replace(/(?:\r\n|\r|\n)/g, '\n' + TAB); }
+    function indent(str) { return str.replace(/(?:\r\n|\r|\n)/g, '\n' + '\t'); }
 
     if (obj === undefined) return 'undefined';
     if (obj === null) return 'null';
@@ -322,8 +321,8 @@ function serialize(obj) {
         case Function:
             var funstring = obj.toString();
             if (funstring.indexOf('\n') > -1) {
-                while(funstring.split('\n')[1].indexOf(TAB + TAB) == 0)
-                    funstring = funstring.replace(LINEBREAK_TAB, '\n');
+                while(funstring.split('\n')[1].indexOf('\t' + '\t') == 0)
+                    funstring = funstring.replace(/(?:\r\n\t|\r\t|\n\t)/g, '\n');
             }
             return funstring;
         case Array:
