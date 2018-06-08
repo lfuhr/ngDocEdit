@@ -2,7 +2,7 @@
 A web technology based document editor for offline use with structured document support
 
 Even when using Stylesheets in office applications one cannot define the whole template and make the content independent from it.
-This is a lightweight, modular and plattform-independent approach using Angular.js and the powerful document editing functions
+This is a lightweight, modular and plattform-independent approach using **Angular.js (v1)** and the powerful document editing functions
 ([execCommand](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand)) of modern browsers that can be used to
 implement WYSIWYG-editors in [a view lines](https://codepen.io/ElijahFowler/pen/fyILl) .
 
